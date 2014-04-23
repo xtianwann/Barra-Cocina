@@ -1,0 +1,68 @@
+<android.gesture.GestureOverlayView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gestures"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="4" >
+
+            <fragment
+                android:id="@+id/fragmentlista1"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                class="prg.pi.restaurantebarracocina.FragmentComanda" />
+
+            <fragment
+                android:id="@+id/fragmentlista2"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                class="prg.pi.restaurantebarracocina.FragmentComanda" />
+
+            <fragment
+                android:id="@+id/fragmentlista3"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                class="prg.pi.restaurantebarracocina.FragmentComanda" />
+
+            <fragment
+                android:id="@+id/fragmentlista4"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                class="prg.pi.restaurantebarracocina.FragmentComanda" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="9"
+            android:background="@drawable/cocina_color"
+            android:orientation="horizontal"
+            android:weightSum="8" >
+
+            <Button
+                android:id="@+id/listo"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_margin="2dip"
+                android:layout_weight="2"
+                android:background="@drawable/listo_color"
+                android:text="Listo" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.gesture.GestureOverlayView>

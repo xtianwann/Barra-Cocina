@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:weightSum="6">
+     <TextView
+        android:id="@+id/unidad"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="15dip"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:textColor="#FFFFFF">
+     </TextView>
+     <TextView
+        android:id="@+id/producto"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:textSize="15dip"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:textColor="#FFFFFF">
+     </TextView>
+     <TextView
+        android:id="@+id/estado"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="15dip"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:textColor="#FFFFFF">
+     </TextView>
+</LinearLayout>
