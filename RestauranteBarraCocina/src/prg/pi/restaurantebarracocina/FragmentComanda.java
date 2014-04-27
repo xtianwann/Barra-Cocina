@@ -75,18 +75,18 @@ public class FragmentComanda extends Fragment {
 						.findViewById(R.id.producto);
 				pedido.estadoTexto = (TextView) convertView
 						.findViewById(R.id.estado);
-
 				convertView.setTag(pedido);
 			} else {
 				pedido = (PedidoTexto) convertView.getTag();
 			}
 			PedidosEntrantesCB pedidoEntrante = pedidosEntrantes.get(position);
-			pedido.cantidadTexto.setText(pedidoEntrante.getUnidades());
+			Log.d("position",pedidoEntrante.getProducto().getNombreProducto()+"");
+			pedido.cantidadTexto.setText(pedidoEntrante.getUnidades()+"");
 			pedido.productoTexto.setText(pedidoEntrante.getProducto()
 					.getCantidadPadre()
 					+ " "
 					+ pedidoEntrante.getProducto().getNombreProducto());
-			pedido.estadoTexto.setText(pedidoEntrante.getListos());
+			pedido.estadoTexto.setText(pedidoEntrante.getListos()+"");
 			if (seleccionado == position) {
 				pedido.cantidadTexto.setBackgroundColor(Color
 						.parseColor("#F6A421"));
@@ -109,9 +109,10 @@ public class FragmentComanda extends Fragment {
 			TextView estadoTexto;
 		}
 	}
-	public void addPedidos(PedidosEntrantesCB[] pedidos) {
-		for(PedidosEntrantesCB pedido : pedidos)
+	public void addPedidos(PedidosEntrantesCB[] pedidosE) {
+		for(PedidosEntrantesCB pedido : pedidosE){
 			pedidosEntrantes.add(pedido);
+		}
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}

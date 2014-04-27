@@ -28,6 +28,7 @@ import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantes
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
+import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
 
 /**
