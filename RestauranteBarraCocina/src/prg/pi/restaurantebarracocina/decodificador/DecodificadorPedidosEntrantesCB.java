@@ -51,7 +51,7 @@ public class DecodificadorPedidosEntrantesCB {
             int unidades = Integer.parseInt(nodeListDatos.item(2).getFirstChild().getNodeValue());
             int listos = Integer.parseInt(nodeListDatos.item(3).getFirstChild().getNodeValue());
             
-            pedidosEntrantes.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
+            pedidosEntrantes.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades,new Producto(idMenu, nombreProducto, nombreCantidad), listos));
 		}
 	}
 

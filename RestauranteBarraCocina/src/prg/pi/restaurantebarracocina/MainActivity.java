@@ -12,6 +12,7 @@ import java.util.HashMap;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
+import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
 import prg.pi.restaurantebarracocina.servidor.Servidor;
 import android.os.Bundle;
@@ -32,17 +33,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity implements
-		OnGesturePerformedListener {
-	private Button listo;
-	public FragmentComanda fragmentComanda1, fragmentComanda2,
-			fragmentComanda3, fragmentComanda4;
-	private FragmentComanda fragments[];
-	private ArrayList<MesaDestino> mesasDestino;
-	private int contador;
+public class MainActivity extends FragmentActivity {
+	public FragmentComanda fragmentComanda;
 	private Servidor servidor;
-	private GestureLibrary libreria;
+	private Button limpiar,cambiar,mas,menos,x;
+	private Calculadora calculadora;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +53,6 @@ public class MainActivity extends FragmentActivity implements
 		// Remove notification bar
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		mesasDestino = new ArrayList<MesaDestino>();
-		contador = 0;
 		// Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -65,75 +60,92 @@ public class MainActivity extends FragmentActivity implements
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
-		libreria = GestureLibraries.fromRawResource(this, R.raw.gestures);
-		if (!libreria.load()) {
-			finish();
-		}
-		GestureOverlayView gesturesView = (GestureOverlayView) findViewById(R.id.gestures);
-		gesturesView.addOnGesturePerformedListener(this);
-		gesturesView.setGestureVisible(false);
-		fragmentComanda1 = (FragmentComanda) getSupportFragmentManager()
-				.findFragmentById(R.id.fragmentlista1);
-		fragmentComanda2 = (FragmentComanda) getSupportFragmentManager()
-				.findFragmentById(R.id.fragmentlista2);
-		fragmentComanda3 = (FragmentComanda) getSupportFragmentManager()
-				.findFragmentById(R.id.fragmentlista3);
-		fragmentComanda4 = (FragmentComanda) getSupportFragmentManager()
-				.findFragmentById(R.id.fragmentlista4);
-
-		listo = (Button) findViewById(R.id.listo);
-		listo.setOnClickListener(new AdapterView.OnClickListener() {
-			public void onClick(View view) {
-				for(FragmentComanda fragment : fragments)
-					fragment.setSeleccionado(-1);
-			}
-		});
+		fragmentComanda = (FragmentComanda) getSupportFragmentManager()
+				.findFragmentById(R.id.fragmentlista);
 		servidor = new Servidor(MainActivity.this);
-		fragments = new FragmentComanda[] { fragmentComanda1, fragmentComanda2,
-				fragmentComanda3, fragmentComanda4 };
+		iniciarCalculadora();
 	}
+	private void iniciarCalculadora() {
+		calculadora = new Calculadora(
+				new int[] { R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4,
+						R.id.c5, R.id.c6, R.id.c7, R.id.c8, R.id.c9 }, R.id.ce,
+				R.id.total);
+		cambiar = (Button) findViewById(R.id.cambiar);
+		cambiar.setOnClickListener(new AdapterView.OnClickListener() {
+			public void onClick(View view) {
 
-	public MesaDestino[] getMesasDsestino() {
-		return mesasDestino.toArray(new MesaDestino[0]);
-	}
 
-	public void addMesaDestino(MesaDestino mesa) {
-		mesasDestino.add(mesa);
-		reorganizarMesas();
-	}
-
-	private void reorganizarMesas() {
-		int tope;
-		if (mesasDestino.size() > contador + 4) {
-			tope = 4;
-		} else {
-			tope = mesasDestino.size()-contador;
-		}
-		for (int contadorMesa = 0; contadorMesa < tope; contadorMesa++) {
-			fragments[contadorMesa].iniciarMesa(mesasDestino.get(contadorMesa+contador));
-		}
-	}
-
-	public void onGesturePerformed(GestureOverlayView ov, Gesture gesture) {
-		ArrayList<Prediction> predictions = libreria.recognize(gesture);
-		if (predictions.size() > 0) {
-			String comando = predictions.get(0).name;
-			Log.d("prediccion", comando);
-			if (comando.equals("atras") && mesasDestino.size() > contador+4) {
-				contador = contador+4;
-				reiniciarMesas();
-				reorganizarMesas();
-			} else if (comando.equals("adelante") && contador > 0) {
-				contador = contador-4;
-				reiniciarMesas();
-				reorganizarMesas();
 			}
 
-		}
+		});
+		mas = (Button) findViewById(R.id.mas);
+		mas.setOnClickListener(new AdapterView.OnClickListener() {
+			public void onClick(View view) {
+
+			}
+
+		});
+		menos = (Button) findViewById(R.id.menos);
+		menos.setOnClickListener(new AdapterView.OnClickListener() {
+			public void onClick(View view) {
+
+			}
+
+		});
+		x = (Button) findViewById(R.id.x);
+		x.setOnClickListener(new AdapterView.OnClickListener() {
+			public void onClick(View view) {
+
+			}
+
+		});
+		
 	}
-	public void reiniciarMesas() {
-		for(FragmentComanda fragment : fragments)
-			fragment.reiniciarMesa();
+	public FragmentComanda getFragmentComanda() {
+		return fragmentComanda;
+	}
+	public class Calculadora {
+		Button cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve,
+				ce;
+		public Button botones[] = { cero, uno, dos, tres, cuatro, cinco, seis,
+				siete, ocho, nueve };
+		public TextView total;
+
+		public Calculadora(int botonesR[], int ceR, int totalR) {
+			for (int contador = 0; contador < botones.length; contador++) {
+				botones[contador] = (Button) findViewById(
+						botonesR[contador]);
+				botones[contador]
+						.setOnClickListener(new AdapterView.OnClickListener() {
+							public void onClick(View view) {
+								if (total.getText().length() < 3) {
+									Button botonPulsado = (Button) view;
+									int sumando = Integer.parseInt(botonPulsado
+											.getText() + "");
+									sumar(sumando);
+								}
+							}
+						});
+			}
+			ce = (Button) findViewById(ceR);
+			ce.setOnClickListener(new AdapterView.OnClickListener() {
+				public void onClick(View view) {
+					total.setText(0 + "");
+				}
+			});
+			total = (TextView) findViewById(totalR);
+		}
+
+		public void sumar(int sumando) {
+			String totalSuma = total.getText() + "";
+			int suma = Integer.parseInt(totalSuma);
+			if (suma == 0) {
+				totalSuma = sumando + "";
+			} else {
+				totalSuma = suma + "" + sumando + "";
+			}
+			total.setText(totalSuma);
+		}
 	}
 
 }

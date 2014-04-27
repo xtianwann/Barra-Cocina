@@ -3,31 +3,36 @@ package prg.pi.restaurantebarracocina;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
+import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
-
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class FragmentComanda extends Fragment{
+public class FragmentComanda extends Fragment {
 	private ListView lista;
-	private MesaDestino mesaDestino;
 	private AdaptadorComanda adaptador;
+	private ArrayList<PedidosEntrantesCB> pedidosEntrantes;
 	private int seleccionado = -1;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -37,9 +42,9 @@ public class FragmentComanda extends Fragment{
 	@Override
 	public void onActivityCreated(Bundle state) {
 		super.onActivityCreated(state);
-		lista = (ListView) getView().findViewById(R.id.lista);
-		reiniciarMesa();
+		prepararListeners();
 	}
+
 	private class AdaptadorComanda extends BaseAdapter {
 		private LayoutInflater mInflater;
 
@@ -48,7 +53,7 @@ public class FragmentComanda extends Fragment{
 		}
 
 		public int getCount() {
-			return new ArrayList<Pedido>(mesaDestino.getPedidos().keySet()).size();
+			return pedidosEntrantes.size();
 		}
 
 		public Object getItem(int position) {
@@ -75,6 +80,13 @@ public class FragmentComanda extends Fragment{
 			} else {
 				pedido = (PedidoTexto) convertView.getTag();
 			}
+			PedidosEntrantesCB pedidoEntrante = pedidosEntrantes.get(position);
+			pedido.cantidadTexto.setText(pedidoEntrante.getUnidades());
+			pedido.productoTexto.setText(pedidoEntrante.getProducto()
+					.getCantidadPadre()
+					+ " "
+					+ pedidoEntrante.getProducto().getNombreProducto());
+			pedido.estadoTexto.setText(pedidoEntrante.getListos());
 			if (seleccionado == position) {
 				pedido.cantidadTexto.setBackgroundColor(Color
 						.parseColor("#F6A421"));
@@ -82,22 +94,11 @@ public class FragmentComanda extends Fragment{
 						.parseColor("#F6A421"));
 				pedido.estadoTexto.setBackgroundColor(Color
 						.parseColor("#F6A421"));
+
 			} else {
 				pedido.cantidadTexto.setBackgroundColor(Color.TRANSPARENT);
 				pedido.productoTexto.setBackgroundColor(Color.TRANSPARENT);
 				pedido.estadoTexto.setBackgroundColor(Color.TRANSPARENT);
-			}
-			Iterator iterador = mesaDestino.getPedidos().entrySet().iterator();
-			if (iterador.hasNext()) {
-				ArrayList<Pedido> pedidos = new ArrayList<Pedido>(mesaDestino.getPedidos().keySet());
-				Pedido pedidoDestino = pedidos.get(position);
-				String producto = pedidoDestino.getProducto().getCantidadPadre()+" "+pedidoDestino.getProducto().getNombreProducto();
-				String unidades = pedidoDestino.getUnidades()+"";
-				ArrayList<Integer> estados = new ArrayList<Integer>(mesaDestino.getPedidos().values());
-				String estado = estados.get(position)+"";
-				pedido.cantidadTexto.setText(unidades);
-				pedido.productoTexto.setText(producto);
-				pedido.estadoTexto.setText(estado);
 			}
 			return convertView;
 		}
@@ -108,16 +109,16 @@ public class FragmentComanda extends Fragment{
 			TextView estadoTexto;
 		}
 	}
-	public int getSeleccionado() {
-		return seleccionado;
-	}
-
-	public void setSeleccionado(int seleccionado) {
-		this.seleccionado = seleccionado;
+	public void addPedidos(PedidosEntrantesCB[] pedidos) {
+		for(PedidosEntrantesCB pedido : pedidos)
+			pedidosEntrantes.add(pedido);
+		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-	public void iniciarMesa(MesaDestino mesaDestino){
-		this.mesaDestino = mesaDestino;
+	
+	private void prepararListeners() {
+		pedidosEntrantes = new ArrayList<PedidosEntrantesCB>();
+		lista = (ListView) getView().findViewById(R.id.lista);
 		adaptador = new AdaptadorComanda(getView().getContext());
 		lista.setAdapter(adaptador);
 		lista.setOnItemClickListener(new OnItemClickListener() {
@@ -128,11 +129,25 @@ public class FragmentComanda extends Fragment{
 				adaptador.notifyDataSetChanged();
 			}
 		});
+		
+//		enviar = (Button) getView().findViewById(R.id.enviar);
+//		enviar.setOnClickListener(new AdapterView.OnClickListener() {
+//			public void onClick(View view) {
+//				
+//					new Thread(new Runnable() {
+//						public void run() {
+//							getActivity().runOnUiThread(new Runnable() {
+//								@Override
+//								public void run() {
+//
+//								}
+//							});
+//						}
+//					}).start();
+//				}
+//			}
+//
+//		});
 	}
-	public void reiniciarMesa(){
-		String vacio[] = {};
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-		        android.R.layout.simple_list_item_1, vacio);
-		lista.setAdapter(adapter);
-	}
+	
 }

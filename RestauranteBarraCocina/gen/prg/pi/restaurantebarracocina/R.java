@@ -21,26 +21,38 @@ public final class R {
         public static final int activity_vertical_margin=0x7f050001;
     }
     public static final class drawable {
-        public static final int cocina_color=0x7f020000;
-        public static final int ic_launcher=0x7f020001;
-        public static final int listas_color=0x7f020002;
-        public static final int listo_color=0x7f020003;
+        public static final int acciones_color=0x7f020000;
+        public static final int cocina_color=0x7f020001;
+        public static final int ic_launcher=0x7f020002;
+        public static final int listas_color=0x7f020003;
+        public static final int listo_color=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000d;
-        public static final int estado=0x7f090008;
-        public static final int estadoText=0x7f09000b;
-        public static final int fragmentlista1=0x7f090001;
-        public static final int fragmentlista2=0x7f090002;
-        public static final int fragmentlista3=0x7f090003;
-        public static final int fragmentlista4=0x7f090004;
-        public static final int gestures=0x7f090000;
-        public static final int lista=0x7f09000c;
-        public static final int listo=0x7f090005;
-        public static final int producto=0x7f090007;
-        public static final int productoText=0x7f09000a;
-        public static final int unidad=0x7f090006;
-        public static final int unidadText=0x7f090009;
+        public static final int action_settings=0x7f090018;
+        public static final int c0=0x7f09000f;
+        public static final int c1=0x7f09000b;
+        public static final int c2=0x7f09000c;
+        public static final int c3=0x7f09000d;
+        public static final int c4=0x7f090009;
+        public static final int c5=0x7f090008;
+        public static final int c6=0x7f090007;
+        public static final int c7=0x7f090003;
+        public static final int c8=0x7f090004;
+        public static final int c9=0x7f090005;
+        public static final int cambiar=0x7f090006;
+        public static final int ce=0x7f090010;
+        public static final int estado=0x7f090013;
+        public static final int estadoText=0x7f090016;
+        public static final int fragmentlista=0x7f090000;
+        public static final int lista=0x7f090017;
+        public static final int mas=0x7f09000a;
+        public static final int menos=0x7f09000e;
+        public static final int producto=0x7f090012;
+        public static final int productoText=0x7f090015;
+        public static final int total=0x7f090001;
+        public static final int unidad=0x7f090011;
+        public static final int unidadText=0x7f090014;
+        public static final int x=0x7f090002;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

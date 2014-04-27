@@ -1,3 +1,4 @@
+
 package prg.pi.restaurantebarracocina.restaurante;
 
 /**
@@ -9,13 +10,15 @@ public class PedidosEntrantesCB {
 	private String nombreSeccion;
 	private String nombreMesa;
 	private int idComanda;
+	private int unidades;
 	private Producto producto;
 	private int listos;
 
-	public PedidosEntrantesCB(String nombreSeccion, String nombreMesa, int idComanda, Producto producto, int listos) {
+	public PedidosEntrantesCB(String nombreSeccion, String nombreMesa, int idComanda, int unidades,Producto producto, int listos) {
 		this.nombreSeccion = nombreSeccion;
 		this.nombreMesa = nombreMesa;
 		this.idComanda = idComanda;
+		this.unidades = unidades;
 		this.producto = producto;
 		this.listos = listos;
 	}
@@ -58,6 +61,14 @@ public class PedidosEntrantesCB {
 
 	public void setListos(int listos) {
 		this.listos = listos;
+	}
+
+	public int getUnidades() {
+		return unidades;
+	}
+
+	public void setUnidades(int unidades) {
+		this.unidades = unidades;
 	}
 	
 }

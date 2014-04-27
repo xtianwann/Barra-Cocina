@@ -24,6 +24,7 @@ import android.widget.Spinner;
 
 import prg.pi.restaurantebarracocina.MainActivity;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaBarra;
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
@@ -70,8 +71,8 @@ public class GestorMensajes extends Thread {
 						principal.runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								DecodificadorCocinaBarra pedidoMesa = new DecodificadorCocinaBarra(dom);
-								principal.addMesaDestino(pedidoMesa.getMesaDestino());
+								DecodificadorPedidosEntrantesCB pedidos = new DecodificadorPedidosEntrantesCB(dom);
+								principal.getFragmentComanda().addPedidos(pedidos.getPedidosEntrantes());
 							}
 						});
 					}
