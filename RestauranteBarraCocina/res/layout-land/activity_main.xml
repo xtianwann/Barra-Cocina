@@ -144,7 +144,7 @@
                 android:layout_margin="3dip"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
-                android:text="Cambiar" />
+                android:text="↔" />
         </LinearLayout>
 
         <LinearLayout
@@ -273,6 +273,16 @@
             android:layout_height="0px"
             android:layout_weight="1"
             android:background="@drawable/acciones_color" >
+            
+            <Button
+                android:id="@+id/enviar"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_margin="3dip"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:text="Enviar" />
 
             <Button
                 android:id="@+id/deshacer"
@@ -284,15 +294,6 @@
                 android:background="#FFFFFF"
                 android:text="Deshacer" />
 
-            <Button
-                android:id="@+id/enviar"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_margin="3dip"
-                android:layout_weight="1"
-                android:background="#FFFFFF"
-                android:text="Enviar" />
         </LinearLayout>
     </LinearLayout>
 
