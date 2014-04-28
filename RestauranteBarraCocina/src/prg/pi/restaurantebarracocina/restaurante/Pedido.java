@@ -21,5 +21,4 @@ public class Pedido {
 		this.producto = producto;
 		this.unidades = unidades;
 	}
-
 }

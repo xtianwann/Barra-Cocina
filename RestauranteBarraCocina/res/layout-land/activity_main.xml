@@ -4,12 +4,70 @@
     android:orientation="horizontal"
     android:weightSum="10" >
 
-        <fragment
-            android:id="@+id/fragmentlista"
-            android:layout_width="0px"
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:orientation="horizontal"
+        android:weightSum="4" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="6"
-            class="prg.pi.restaurantebarracocina.FragmentComanda" />
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:weightSum="6" >
+
+                <TextView
+                    android:id="@+id/unidadText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Cant."
+                    android:textColor="#FFFFFF"
+                    android:textSize="16dip"
+                    android:textStyle="bold"
+                    android:typeface="serif" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/productoText"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:text="Producto"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:typeface="serif" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/estadoText"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Listo"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:typeface="serif" >
+                </TextView>
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lista"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/listas_color" >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         style="?android:attr/buttonBarButtonStyle"
@@ -18,7 +76,7 @@
         android:layout_weight="4"
         android:background="@drawable/acciones_color"
         android:orientation="vertical"
-        android:weightSum="5" >
+        android:weightSum="6" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +89,7 @@
                 android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_margin="3dip"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:background="#000000"
                 android:gravity="center"
                 android:text="0"
@@ -39,16 +97,6 @@
                 android:textSize="16sp"
                 android:textStyle="bold" >
             </TextView>
-
-            <Button
-                android:id="@+id/x"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_margin="3dip"
-                android:layout_weight="2"
-                android:background="#FFFFFF"
-                android:text="X" />
         </LinearLayout>
 
         <LinearLayout
@@ -219,5 +267,33 @@
                 android:background="#FFFFFF"
                 android:text="CE" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="@drawable/acciones_color" >
+
+            <Button
+                android:id="@+id/deshacer"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_margin="3dip"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:text="Deshacer" />
+
+            <Button
+                android:id="@+id/enviar"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_margin="3dip"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:text="Enviar" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

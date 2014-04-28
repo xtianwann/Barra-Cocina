@@ -70,5 +70,8 @@ public class PedidosEntrantesCB {
 	public void setUnidades(int unidades) {
 		this.unidades = unidades;
 	}
+	public boolean isTerminado(){
+		return listos == unidades;
+	}
 	
 }

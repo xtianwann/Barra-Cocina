@@ -73,7 +73,7 @@ public class GestorMensajes extends Thread {
 							@Override
 							public void run() {
 								DecodificadorPedidosEntrantesCB pedidos = new DecodificadorPedidosEntrantesCB(dom);
-								principal.getFragmentComanda().addPedidos(pedidos.getPedidosEntrantes());
+								principal.addPedidos(pedidos.getPedidosEntrantes());
 							}
 						});
 					}
