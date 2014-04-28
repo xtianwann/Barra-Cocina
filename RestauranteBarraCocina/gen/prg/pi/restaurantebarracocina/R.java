@@ -41,8 +41,8 @@ public final class R {
         public static final int c9=0x7f090007;
         public static final int cambiar=0x7f090008;
         public static final int ce=0x7f090012;
-        public static final int deshacer=0x7f090013;
-        public static final int enviar=0x7f090014;
+        public static final int deshacer=0x7f090014;
+        public static final int enviar=0x7f090013;
         public static final int estado=0x7f090017;
         public static final int estadoText=0x7f090002;
         public static final int lista=0x7f090003;

@@ -1,5 +1,6 @@
 package prg.pi.restaurantebarracocina.xml;
 
+import android.util.Log;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import XML.XML;
 
@@ -13,6 +14,7 @@ public class XMLPedidosListos extends XML{
 			addNodoConAtributos("pedido", new String[]{"idCom"}, new String[]{pedidos[contadorPedidos].getIdComanda()+""}, null, "salen");
 			addNodo("idMenu", pedidos[contadorPedidos].getProducto().getIdMenu()+"", "pedido");
 			addNodo("listos", pedidos[contadorPedidos].getListos()+"", "pedido");
+			Log.e("entro",pedidos[contadorPedidos].getProducto().getNombreProducto());
 		}
 	}
 

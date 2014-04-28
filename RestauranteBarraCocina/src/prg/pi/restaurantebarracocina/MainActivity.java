@@ -77,14 +77,14 @@ public class MainActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
 
-		// servidor = new Servidor(MainActivity.this);
+		servidor = new Servidor(MainActivity.this);
 		iniciarCalculadora();
 		prepararListeners();
 		// Pruebas en el trabajo
-		pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
-				new Producto(1, "Chocos", "Racion"), 0));
-		pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
-				new Producto(2, "Huevas", "Tapa"), 0));
+//		pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
+//				new Producto(1, "Chocos", "Racion"), 0));
+//		pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
+//				new Producto(2, "Huevas", "Tapa"), 0));
 		/////////////////////////////////////////////////////////////
 	}
 
@@ -255,7 +255,7 @@ public class MainActivity extends Activity {
 		return terminado;
 	}
 
-	private void enviarComanda() {
+	public void enviarComanda() {
 		new Thread(new Runnable() {
 			public void run() {
 				runOnUiThread(new Runnable() {
@@ -263,6 +263,7 @@ public class MainActivity extends Activity {
 					public void run() {
 						XMLPedidosListos xmlEnviarComandaLista = new XMLPedidosListos(
 								listos.toArray(new PedidosEntrantesCB[0]));
+						Log.e("size",listos.size()+"");
 						String mensaje = xmlEnviarComandaLista
 								.xmlToString(xmlEnviarComandaLista
 										.getDOM());
@@ -273,15 +274,15 @@ public class MainActivity extends Activity {
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						}			
+						terminarPedido();
+						listos.clear();
+						seleccionado = -1;
+						adaptador.notifyDataSetChanged();
 					}
 				});
 			}
 		}).start();
-		terminarPedido();
-		listos.clear();
-		seleccionado = -1;
-		adaptador.notifyDataSetChanged();
 	}
 
 	private void deshacerComanda() {
