@@ -1,6 +1,5 @@
 package prg.pi.restaurantebarracocina;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -30,7 +29,9 @@ import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	private Servidor servidor;
 	private Button limpiar, cambiar, mas, menos, enviar, deshacer;
 	private Calculadora calculadora;
@@ -56,10 +57,13 @@ public class MainActivity extends Activity {
 	private int seleccionado = -1;
 	private ArrayList<PedidosEntrantesCB> listos;
 	private NotificacionBarra notificacion;
+	private DrawerLayout drawerLayout;
+	private Fragment fragmentHistorico;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -76,8 +80,9 @@ public class MainActivity extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
-
+		fragmentHistorico = (FragmentHistorico) getSupportFragmentManager().findFragmentById(R.id.historicosF);
 		servidor = new Servidor(MainActivity.this);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		iniciarCalculadora();
 		prepararListeners();
 		// Pruebas en el trabajo
