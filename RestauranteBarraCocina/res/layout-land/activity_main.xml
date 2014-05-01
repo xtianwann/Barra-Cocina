@@ -103,6 +103,15 @@
                     android:textSize="16sp"
                     android:textStyle="bold" >
                 </TextView>
+                <Button
+                    android:id="@+id/todo"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3dip"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF"
+                    android:text="Todo" />
             </LinearLayout>
 
             <LinearLayout
@@ -289,16 +298,6 @@
                     android:layout_weight="1"
                     android:background="#FFFFFF"
                     android:text="Enviar" />
-
-                <Button
-                    android:id="@+id/deshacer"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="0px"
-                    android:layout_height="match_parent"
-                    android:layout_margin="3dip"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF"
-                    android:text="Deshacer" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

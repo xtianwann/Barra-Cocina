@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 
+import prg.pi.restaurantebarracocina.FragmentHistorico.HistoricoListener;
 import prg.pi.restaurantebarracocina.conexion.Cliente;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
@@ -47,9 +48,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements HistoricoListener{
 	private Servidor servidor;
-	private Button limpiar, cambiar, mas, menos, enviar, deshacer;
+	private Button limpiar, cambiar, mas, menos, enviar, deshacer, todo;
 	private Calculadora calculadora;
 	private ListView lista;
 	private AdaptadorComanda adaptador;
@@ -58,12 +59,11 @@ public class MainActivity extends FragmentActivity {
 	private ArrayList<PedidosEntrantesCB> listos;
 	private NotificacionBarra notificacion;
 	private DrawerLayout drawerLayout;
-	private Fragment fragmentHistorico;
+	private FragmentHistorico fragmentHistorico;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -80,17 +80,19 @@ public class MainActivity extends FragmentActivity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
-		fragmentHistorico = (FragmentHistorico) getSupportFragmentManager().findFragmentById(R.id.historicosF);
-		servidor = new Servidor(MainActivity.this);
+		fragmentHistorico = (FragmentHistorico) getSupportFragmentManager()
+				.findFragmentById(R.id.historicosF);
+		fragmentHistorico.setHistoricoListener(this);
+		// servidor = new Servidor(MainActivity.this);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		iniciarCalculadora();
 		prepararListeners();
 		// Pruebas en el trabajo
-//		pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
-//				new Producto(1, "Chocos", "Racion"), 0));
-//		pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
-//				new Producto(2, "Huevas", "Tapa"), 0));
-		/////////////////////////////////////////////////////////////
+		pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
+				new Producto(1, "Chocos", "Racion"), 0));
+		pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
+				new Producto(2, "Huevas", "Tapa"), 0));
+		// ///////////////////////////////////////////////////////////
 	}
 
 	private class AdaptadorComanda extends BaseAdapter {
@@ -148,20 +150,22 @@ public class MainActivity extends FragmentActivity {
 		enviar.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
 				if (listos.size() > 0) {
-					notificacion.lanzarNotificacionTerminado();
+					enviarComanda();
 				} else {
 					notificacion.lanzarNotificacionSinModificar();
 				}
 			}
 
 		});
-		deshacer = (Button) findViewById(R.id.deshacer);
-		deshacer.setOnClickListener(new AdapterView.OnClickListener() {
+		todo = (Button) findViewById(R.id.todo);
+		todo.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
 				int total = Integer.parseInt(calculadora.total.getText() + "");
-				if (seleccionado > -1
-						&& pedidosEntrantes.get(seleccionado).getUnidades() > total) {
-					notificacion.lanzarNotificacionDeshacer(total);
+				if (seleccionado > -1) {
+					pedidosEntrantes.get(seleccionado).setListos(
+							pedidosEntrantes.get(seleccionado).getUnidades());
+					addListo();
+					adaptador.notifyDataSetChanged();
 				}
 			}
 		});
@@ -241,6 +245,8 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void terminarPedido() {
+		fragmentHistorico.addPedidosHistoricos(listos
+				.toArray(new PedidosEntrantesCB[0]));
 		for (PedidosEntrantesCB pedidoTerminado : listos) {
 			if (pedidoTerminado.isTerminado()) {
 				pedidosEntrantes.remove(pedidoTerminado);
@@ -261,44 +267,37 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void enviarComanda() {
-		new Thread(new Runnable() {
-			public void run() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						XMLPedidosListos xmlEnviarComandaLista = new XMLPedidosListos(
-								listos.toArray(new PedidosEntrantesCB[0]));
-						Log.e("size",listos.size()+"");
-						String mensaje = xmlEnviarComandaLista
-								.xmlToString(xmlEnviarComandaLista
-										.getDOM());
-						Cliente c = new Cliente(mensaje);
-						c.run();
-						try {
-							c.join();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}			
-						terminarPedido();
-						listos.clear();
-						seleccionado = -1;
-						adaptador.notifyDataSetChanged();
-					}
-				});
-			}
-		}).start();
-	}
-
-	private void deshacerComanda() {
-		//XML Pendiente por hacer
-		int total = Integer.parseInt(calculadora.total.getText() + "");
-		pedidosEntrantes.get(seleccionado).setListos(total);
-		if (isListo(seleccionado)) {
-			listos.remove(pedidosEntrantes.get(seleccionado));
-		}
-		adaptador.notifyDataSetChanged();
+		// new Thread(new Runnable() {
+		// public void run() {
+		// runOnUiThread(new Runnable() {
+		// @Override
+		// public void run() {
+		// XMLPedidosListos xmlEnviarComandaLista = new XMLPedidosListos(
+		// listos.toArray(new PedidosEntrantesCB[0]));
+		// Log.e("size",listos.size()+"");
+		// String mensaje = xmlEnviarComandaLista
+		// .xmlToString(xmlEnviarComandaLista
+		// .getDOM());
+		// Cliente c = new Cliente(mensaje);
+		// c.run();
+		// try {
+		// c.join();
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// terminarPedido();
+		// listos.clear();
+		// seleccionado = -1;
+		// adaptador.notifyDataSetChanged();
+		// }
+		// });
+		// }
+		// }).start();
+		terminarPedido();
+		listos.clear();
 		seleccionado = -1;
+		adaptador.notifyDataSetChanged();
 	}
 
 	public void addPedidos(PedidosEntrantesCB[] pedidosE) {
@@ -358,60 +357,6 @@ public class MainActivity extends FragmentActivity {
 
 		public NotificacionBarra(MainActivity mainActivity) {
 			this.mainActivity = mainActivity;
-		}
-
-		public void lanzarNotificacionDeshacer(int total) {
-			dialog = new AlertDialog.Builder(mainActivity);
-			dialog.setMessage("El pedido listo seleccionado se va a deshacer a "
-					+ total + " ¿Continuar?");
-			dialog.setCancelable(false);
-			dialog.setPositiveButton("Si",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							deshacerComanda();
-							calculadora.total.setText("0");
-						}
-					});
-			dialog.setNegativeButton("No",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					});
-			dialog.show();
-		}
-
-		private void lanzarNotificacionTerminado() {
-			dialog = new AlertDialog.Builder(mainActivity);
-			if (existenTerminados()) {
-				dialog.setMessage("Hay pedidos que se van a completar¿Continuar?");
-				dialog.setCancelable(false);
-				dialog.setPositiveButton("Si",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								enviarComanda();
-							}
-						});
-				dialog.setNegativeButton("No",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.cancel();
-							}
-						});
-				dialog.show();
-			} else {
-				enviarComanda();
-			}
 		}
 
 		private void lanzarNotificacionSinModificar() {
@@ -487,5 +432,15 @@ public class MainActivity extends FragmentActivity {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onDeshacerPedido(PedidosEntrantesCB pedido) {
+		if (!pedidosEntrantes.contains(pedido)){
+			pedido.setListos(0);
+			pedidosEntrantes.add(pedido);
+		}
+		lista.invalidateViews();
+		adaptador.notifyDataSetChanged();
 	}
 }
