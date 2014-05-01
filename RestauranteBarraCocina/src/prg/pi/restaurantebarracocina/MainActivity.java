@@ -48,7 +48,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends FragmentActivity implements HistoricoListener{
+public class MainActivity extends FragmentActivity implements HistoricoListener {
 	private Servidor servidor;
 	private Button limpiar, cambiar, mas, menos, enviar, deshacer, todo;
 	private Calculadora calculadora;
@@ -83,15 +83,15 @@ public class MainActivity extends FragmentActivity implements HistoricoListener{
 		fragmentHistorico = (FragmentHistorico) getSupportFragmentManager()
 				.findFragmentById(R.id.historicosF);
 		fragmentHistorico.setHistoricoListener(this);
-		// servidor = new Servidor(MainActivity.this);
+		servidor = new Servidor(MainActivity.this);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		iniciarCalculadora();
 		prepararListeners();
 		// Pruebas en el trabajo
-		pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
-				new Producto(1, "Chocos", "Racion"), 0));
-		pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
-				new Producto(2, "Huevas", "Tapa"), 0));
+		// pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
+		// new Producto(1, "Chocos", "Racion"), 0));
+		// pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
+		// new Producto(2, "Huevas", "Tapa"), 0));
 		// ///////////////////////////////////////////////////////////
 	}
 
@@ -140,6 +140,16 @@ public class MainActivity extends FragmentActivity implements HistoricoListener{
 			@Override
 			public void onItemClick(AdapterView<?> list, View view, int pos,
 					long id) {
+				if (seleccionado > -1) {
+					if (fragmentHistorico.getHistoricos(pedidosEntrantes
+							.get(seleccionado)) != null) {
+						if (pedidosEntrantes.get(seleccionado).getListos() == fragmentHistorico
+								.getHistoricos(
+										pedidosEntrantes.get(seleccionado))
+								.getListos())
+							listos.remove(pedidosEntrantes.get(seleccionado));
+					}
+				}
 				seleccionado = pos;
 				adaptador.notifyDataSetChanged();
 			}
@@ -213,9 +223,27 @@ public class MainActivity extends FragmentActivity implements HistoricoListener{
 				if (seleccionado > -1) {
 					int resta = pedidosEntrantes.get(seleccionado).getListos() - 1;
 					if (resta > -1) {
-						pedidosEntrantes.get(seleccionado).setListos(resta);
-						addListo();
-						adaptador.notifyDataSetChanged();
+						if (fragmentHistorico.getHistoricos(pedidosEntrantes
+								.get(seleccionado)) != null) {
+							Log.d("Listos",
+									fragmentHistorico.getHistoricos(
+											pedidosEntrantes.get(seleccionado))
+											.getListos()
+											+ "");
+							if (resta >= fragmentHistorico.getHistoricos(
+									pedidosEntrantes.get(seleccionado))
+									.getListos()) {
+								pedidosEntrantes.get(seleccionado).setListos(
+										resta);
+								addListo();
+								adaptador.notifyDataSetChanged();
+							}
+						} else {
+							pedidosEntrantes.get(seleccionado).setListos(resta);
+							addListo();
+							adaptador.notifyDataSetChanged();
+						}
+
 					}
 				}
 			}
@@ -301,8 +329,57 @@ public class MainActivity extends FragmentActivity implements HistoricoListener{
 	}
 
 	public void addPedidos(PedidosEntrantesCB[] pedidosE) {
+		boolean encontradoH;
+		boolean encontradoE;
+		PedidosEntrantesCB pedidoHEncontrado = null;
 		for (PedidosEntrantesCB pedido : pedidosE) {
-			pedidosEntrantes.add(pedido);
+			encontradoH = false;
+			for (PedidosEntrantesCB pedidoH : fragmentHistorico
+					.dameHistoricos()) {
+				if (pedido.getIdComanda() == pedidoH.getIdComanda()
+						&& pedido.getProducto().getIdMenu() == pedidoH
+								.getProducto().getIdMenu()) {
+					pedidoH.setUnidades(pedidoH.getUnidades()
+							+ pedido.getUnidades());
+					encontradoH = true;
+					pedidoHEncontrado = new PedidosEntrantesCB(
+							pedidoH.getNombreSeccion(),
+							pedidoH.getNombreMesa(), pedidoH.getIdComanda(),
+							pedidoH.getUnidades(), pedidoH.getProducto(),
+							pedidoH.getListos());
+					fragmentHistorico.avisaAdaptador();
+					break;
+				}
+			}
+			if (!encontradoH) {
+				encontradoE = false;
+				for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
+					if (pedido.getIdComanda() == pedidoE.getIdComanda()
+							&& pedido.getProducto().getIdMenu() == pedidoE
+									.getProducto().getIdMenu()) {
+						pedidoE.setUnidades(pedidoE.getUnidades()
+								+ pedido.getUnidades());
+						encontradoE = true;
+						break;
+					}
+				}
+				if (!encontradoE)
+					pedidosEntrantes.add(pedido);
+			} else {
+				encontradoE = false;
+				for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
+					if (pedido.getIdComanda() == pedidoE.getIdComanda()
+							&& pedido.getProducto().getIdMenu() == pedidoE
+									.getProducto().getIdMenu()) {
+						pedidoE.setUnidades(pedidoE.getUnidades()
+								+ pedido.getUnidades());
+						encontradoE = true;
+						break;
+					}
+				}
+				if (!encontradoE)
+					pedidosEntrantes.add(pedidoHEncontrado);
+			}
 		}
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
@@ -436,9 +513,26 @@ public class MainActivity extends FragmentActivity implements HistoricoListener{
 
 	@Override
 	public void onDeshacerPedido(PedidosEntrantesCB pedido) {
-		if (!pedidosEntrantes.contains(pedido)){
-			pedido.setListos(0);
-			pedidosEntrantes.add(pedido);
+		boolean encontrado = false;
+		for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
+			if (pedido.getIdComanda() == pedidoE.getIdComanda()
+					&& pedido.getProducto().getIdMenu() == pedidoE
+							.getProducto().getIdMenu()) {
+				pedidoE.setListos(pedido.getListos());
+				encontrado = true;
+				break;
+			}
+		}
+		if (!encontrado) {
+			int listo;
+			if (pedido.getUnidades() == pedido.getListos())
+				listo = 0;
+			else
+				listo = pedido.getListos();
+			pedidosEntrantes.add(new PedidosEntrantesCB(pedido
+					.getNombreSeccion(), pedido.getNombreMesa(), pedido
+					.getIdComanda(), pedido.getUnidades(),
+					pedido.getProducto(), listo));
 		}
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();

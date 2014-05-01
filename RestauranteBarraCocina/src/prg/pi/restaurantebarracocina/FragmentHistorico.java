@@ -3,7 +3,10 @@ package prg.pi.restaurantebarracocina;
 import java.util.ArrayList;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
+import prg.pi.restaurantebarracocina.restaurante.Producto;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,11 +27,16 @@ public class FragmentHistorico extends Fragment {
 	private ListView listaHistorico;
 	private Button limpiar, cambiar, mas, menos, enviar, deshacer;
 	private Calculadora calculadora;
-	public ArrayList<PedidosEntrantesCB> historicos = new ArrayList<PedidosEntrantesCB>();
+	private ArrayList<PedidosEntrantesCB> historicos = new ArrayList<PedidosEntrantesCB>();
 	private int seleccionado = -1;
 	private AdaptadorHistorico adaptador;
+	public AdaptadorHistorico getAdaptador() {
+		return adaptador;
+	}
 	public HistoricoListener historicoListener;
 	private int listoAnterior;
+	private AlertDialog.Builder dialog;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -76,7 +84,7 @@ public class FragmentHistorico extends Fragment {
 							+ historico.getProducto().getNombreProducto(),
 					historico.getListos());
 			if (seleccionado == position) {
-				pedidoText.cambiaColor(Color.parseColor("#F6A421"));
+				pedidoText.cambiaColor(Color.parseColor("#FF0000"));
 			} else {
 				pedidoText.cambiaColor(Color.TRANSPARENT);
 			}
@@ -138,25 +146,32 @@ public class FragmentHistorico extends Fragment {
 		listaHistorico = (ListView) getView().findViewById(R.id.historico);
 		adaptador = new AdaptadorHistorico(getView().getContext());
 		listaHistorico.setAdapter(adaptador);
-//		listaHistorico.setOnItemLongClickListener(new OnItemLongClickListener() {
-//			@Override
-//			public void onItemLongClick(AdapterView<?> list, View view, int pos,
-//					long id) {
-//				seleccionado = pos;
-//				adaptador.notifyDataSetChanged();
-//			}
-//		});
-		listaHistorico.setOnItemLongClickListener(new OnItemLongClickListener() {
+		listaHistorico
+				.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				seleccionado = arg2;
-				listoAnterior = historicos.get(arg2).getListos();
-				adaptador.notifyDataSetChanged();
-				return false;
-			}
-		});
+					@Override
+					public boolean onItemLongClick(AdapterView<?> arg0,
+							View arg1, int arg2, long arg3) {
+						if (seleccionado > -1) {
+							if(historicos.get(seleccionado).getListos() != listoAnterior){
+								notificacionDeshacer();
+								historicos.get(seleccionado).setListos(listoAnterior);
+								adaptador.notifyDataSetChanged();
+							}
+							else {
+								seleccionado = arg2;
+								listoAnterior = historicos.get(arg2).getListos();
+								adaptador.notifyDataSetChanged();
+							}
+						} else {
+							seleccionado = arg2;
+							listoAnterior = historicos.get(arg2).getListos();
+							adaptador.notifyDataSetChanged();
+						}
+						return false;
+					}
+
+				});
 		calculadora = new Calculadora(
 				new int[] { R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4,
 						R.id.c5, R.id.c6, R.id.c7, R.id.c8, R.id.c9 }, R.id.ce,
@@ -168,11 +183,26 @@ public class FragmentHistorico extends Fragment {
 					PedidosEntrantesCB pedido = historicos.get(seleccionado);
 					int numeroCalculadora = Integer.parseInt(calculadora.total
 							.getText() + "");
-					if (numeroCalculadora <= pedido.getUnidades() && numeroCalculadora < listoAnterior) {
+					if (numeroCalculadora <= pedido.getUnidades()
+							&& numeroCalculadora <= listoAnterior) {
 						pedido.setListos(numeroCalculadora);
 						adaptador.notifyDataSetChanged();
 					}
 					calculadora.total.setText("0");
+				}
+			}
+
+		});
+		mas = (Button) getView().findViewById(R.id.mas);
+		mas.setOnClickListener(new AdapterView.OnClickListener() {
+			public void onClick(View view) {
+				if (seleccionado > -1) {
+					PedidosEntrantesCB pedido = historicos.get(seleccionado);
+					int suma = pedido.getListos() + 1;
+					if (suma <= listoAnterior) {
+						pedido.setListos(suma);
+						adaptador.notifyDataSetChanged();
+					}
 				}
 			}
 
@@ -193,13 +223,20 @@ public class FragmentHistorico extends Fragment {
 		deshacer = (Button) getView().findViewById(R.id.deshacer);
 		deshacer.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
+
 				if (seleccionado > -1) {
 					PedidosEntrantesCB pedido = historicos.get(seleccionado);
-					// Enviar a servidor y todo eso
-					historicoListener.onDeshacerPedido(pedido);
-					historicos.remove(pedido);
-					seleccionado = -1;
-					adaptador.notifyDataSetChanged();
+					if (pedido.getListos() != listoAnterior
+							|| pedido.getUnidades() == pedido.getListos()) {
+						if (pedido.getUnidades() == pedido.getListos() || pedido.getListos() == 0) {
+							pedido.setListos(0);
+							historicos.remove(pedido);
+						}
+						// Enviar a servidor y todo eso
+						historicoListener.onDeshacerPedido(pedido);
+						seleccionado = -1;
+						adaptador.notifyDataSetChanged();
+					}
 				}
 			}
 
@@ -282,9 +319,23 @@ public class FragmentHistorico extends Fragment {
 	}
 
 	public void addPedidosHistoricos(PedidosEntrantesCB[] pedidosAdd) {
+		boolean encontrado;
 		for (PedidosEntrantesCB pedido : pedidosAdd) {
-			if (!historicos.contains(pedido))
-				historicos.add(pedido);
+			encontrado = false;
+			for(PedidosEntrantesCB pedidoH : historicos){
+				if (pedido.getIdComanda() == pedidoH.getIdComanda() && pedido.getProducto().getIdMenu() == pedidoH.getProducto().getIdMenu()){
+					if(pedido.getUnidades() != pedidoH.getUnidades())
+						pedidoH.setListos(pedidoH.getListos()+pedido.getListos());
+					else{
+						pedidoH.setListos(pedido.getListos());
+					}
+					encontrado = true;
+					break;
+				}
+			}
+			if(!encontrado)
+				historicos.add(new PedidosEntrantesCB(pedido.getNombreSeccion(), pedido.getNombreMesa(), pedido.getIdComanda(), pedido.getUnidades(),
+						pedido.getProducto(), pedido.getListos()));
 		}
 		listaHistorico.invalidateViews();
 		adaptador.notifyDataSetChanged();
@@ -297,4 +348,39 @@ public class FragmentHistorico extends Fragment {
 	public void setHistoricoListener(HistoricoListener historicoListener) {
 		this.historicoListener = historicoListener;
 	}
+
+	private void notificacionDeshacer() {
+		dialog = new AlertDialog.Builder(getView().getContext());
+		dialog.setMessage("No se ha terminado la acción de deshacer.");
+		dialog.setCancelable(false);
+		dialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		dialog.show();
+	}
+	public PedidosEntrantesCB getHistoricos(PedidosEntrantesCB pedido) {
+		for(PedidosEntrantesCB pedidoE : historicos)
+			if(pedido.getIdComanda() == pedidoE.getIdComanda() && pedido.getProducto().getIdMenu() == pedidoE.getProducto().getIdMenu())
+				return pedidoE;
+		return null;
+	}
+	public void incrementarUnidades(PedidosEntrantesCB pedido){
+		for(PedidosEntrantesCB pedidoE : historicos){
+			if(pedido.getIdComanda() == pedidoE.getIdComanda() && pedido.getProducto().getIdMenu() == pedidoE.getProducto().getIdMenu()){
+				pedidoE.setUnidades(pedidoE.getUnidades()+pedido.getUnidades());
+				adaptador.notifyDataSetChanged();
+			}
+		}
+	}
+	public ArrayList<PedidosEntrantesCB> dameHistoricos() {
+		return historicos;
+	}
+
+	public void avisaAdaptador() {
+		adaptador.notifyDataSetChanged();
+	}
+	
 }
