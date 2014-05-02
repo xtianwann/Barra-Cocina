@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
+import prg.pi.restaurantebarracocina.xml.XMLModificacionCB;
+import prg.pi.restaurantebarracocina.conexion.Cliente;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -225,17 +227,38 @@ public class FragmentHistorico extends Fragment {
 			public void onClick(View view) {
 
 				if (seleccionado > -1) {
-					PedidosEntrantesCB pedido = historicos.get(seleccionado);
+					final PedidosEntrantesCB pedido = historicos.get(seleccionado);
 					if (pedido.getListos() != listoAnterior
 							|| pedido.getUnidades() == pedido.getListos()) {
 						if (pedido.getUnidades() == pedido.getListos() || pedido.getListos() == 0) {
 							pedido.setListos(0);
 							historicos.remove(pedido);
 						}
-						// Enviar a servidor y todo eso
-						historicoListener.onDeshacerPedido(pedido);
-						seleccionado = -1;
-						adaptador.notifyDataSetChanged();
+						new Thread(new Runnable() {
+							public void run() {
+								getActivity().runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										XMLModificacionCB xmlEnviarModificacion = new XMLModificacionCB(new PedidosEntrantesCB[]{pedido});
+										String mensaje = xmlEnviarModificacion
+												.xmlToString(xmlEnviarModificacion
+														.getDOM());
+										Cliente c = new Cliente(mensaje);
+										c.run();
+										try {
+											c.join();
+										} catch (InterruptedException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+										historicoListener.onDeshacerPedido(pedido);
+										seleccionado = -1;
+										adaptador.notifyDataSetChanged();
+									}
+								});
+							}
+						}).start();
+						
 					}
 				}
 			}

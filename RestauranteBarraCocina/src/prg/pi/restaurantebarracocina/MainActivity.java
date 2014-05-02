@@ -13,6 +13,7 @@ import prg.pi.restaurantebarracocina.conexion.Cliente;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
+import prg.pi.restaurantebarracocina.restaurante.PedidoModificadoCamarero;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
 import prg.pi.restaurantebarracocina.servidor.Servidor;
@@ -295,37 +296,32 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 	}
 
 	public void enviarComanda() {
-		// new Thread(new Runnable() {
-		// public void run() {
-		// runOnUiThread(new Runnable() {
-		// @Override
-		// public void run() {
-		// XMLPedidosListos xmlEnviarComandaLista = new XMLPedidosListos(
-		// listos.toArray(new PedidosEntrantesCB[0]));
-		// Log.e("size",listos.size()+"");
-		// String mensaje = xmlEnviarComandaLista
-		// .xmlToString(xmlEnviarComandaLista
-		// .getDOM());
-		// Cliente c = new Cliente(mensaje);
-		// c.run();
-		// try {
-		// c.join();
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// terminarPedido();
-		// listos.clear();
-		// seleccionado = -1;
-		// adaptador.notifyDataSetChanged();
-		// }
-		// });
-		// }
-		// }).start();
-		terminarPedido();
-		listos.clear();
-		seleccionado = -1;
-		adaptador.notifyDataSetChanged();
+		new Thread(new Runnable() {
+			public void run() {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						XMLPedidosListos xmlEnviarComandaLista = new XMLPedidosListos(
+								listos.toArray(new PedidosEntrantesCB[0]));
+						Log.e("size", listos.size() + "");
+						String mensaje = xmlEnviarComandaLista
+								.xmlToString(xmlEnviarComandaLista.getDOM());
+						Cliente c = new Cliente(mensaje);
+						c.run();
+						try {
+							c.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						terminarPedido();
+						listos.clear();
+						seleccionado = -1;
+						adaptador.notifyDataSetChanged();
+					}
+				});
+			}
+		}).start();
 	}
 
 	public void addPedidos(PedidosEntrantesCB[] pedidosE) {
@@ -534,6 +530,32 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 					.getIdComanda(), pedido.getUnidades(),
 					pedido.getProducto(), listo));
 		}
+		lista.invalidateViews();
+		adaptador.notifyDataSetChanged();
+	}
+
+	public void modificarUnidades(PedidoModificadoCamarero pedidoM) {
+		for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
+			if(pedidoM.getIdComanda() == pedidoH.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoH
+					.getProducto().getIdMenu()) {
+				pedidoH.setUnidades(pedidoM.getUnidades());
+				if(pedidoH.getListos() > pedidoH.getUnidades()){
+					pedidoH.setListos(pedidoH.getUnidades());
+				}
+				fragmentHistorico.avisaAdaptador();
+			}
+		}
+		for(PedidosEntrantesCB pedidoE : pedidosEntrantes){
+			if(pedidoM.getIdComanda() == pedidoE.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoE
+					.getProducto().getIdMenu()) {
+				pedidoE.setUnidades(pedidoM.getUnidades());
+				if(pedidoE.isTerminado()){
+					pedidosEntrantes.remove(pedidoE);
+				}
+			}
+		}	
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}

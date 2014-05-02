@@ -4,12 +4,12 @@ public class PedidoModificadoCamarero {
 	
 	int idComanda;
 	int idMenu;
-	int listos;
+	int unidades;
 	
-	public PedidoModificadoCamarero(int idComanda, int idMenu, int listos){
+	public PedidoModificadoCamarero(int idComanda, int idMenu, int unidades){
 		this.idComanda = idComanda;
 		this.idMenu = idMenu;
-		this.listos = listos;
+		this.unidades = unidades;
 	}
 
 	public int getIdComanda() {
@@ -28,11 +28,11 @@ public class PedidoModificadoCamarero {
 		this.idMenu = idMenu;
 	}
 
-	public int getListos() {
-		return listos;
+	public int getUnidades() {
+		return unidades;
 	}
 
-	public void setListos(int listos) {
-		this.listos = listos;
+	public void setUnidades(int unidades) {
+		this.unidades = unidades;
 	}
 }

@@ -1,6 +1,7 @@
 package prg.pi.restaurantebarracocina.servidor;
 
 import Conexion.Conexion;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.Socket;
@@ -8,9 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -21,9 +24,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import prg.pi.restaurantebarracocina.MainActivity;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaBarra;
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorModificacionCamarero;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
@@ -74,6 +77,20 @@ public class GestorMensajes extends Thread {
 							public void run() {
 								DecodificadorPedidosEntrantesCB pedidos = new DecodificadorPedidosEntrantesCB(dom);
 								principal.addPedidos(pedidos.getPedidosEntrantes());
+							}
+						});
+					}
+				}).start();
+			}
+			if (tipo.equals("ModificacionCamarero")) {
+				new Thread(new Runnable() {
+
+					public void run() {
+						principal.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								DecodificadorModificacionCamarero pedidos = new DecodificadorModificacionCamarero(dom);
+								principal.modificarUnidades(pedidos.getPedidosListos()[0]);
 							}
 						});
 					}

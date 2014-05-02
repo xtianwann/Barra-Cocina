@@ -71,7 +71,7 @@ public class PedidosEntrantesCB {
 		this.unidades = unidades;
 	}
 	public boolean isTerminado(){
-		return listos == unidades;
+		return listos >= unidades;
 	}
 	
 }

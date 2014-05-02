@@ -69,7 +69,7 @@ public class Cliente extends Thread {
 	 */
 	private void conexion() {
 		try {
-			conn = new Conexion("192.168.20.3", 27014);
+			conn = new Conexion("192.168.1.9", 27014);
 		} catch (IOException ex) {
 			Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null,
 					ex);
