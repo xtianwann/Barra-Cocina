@@ -559,4 +559,28 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
+	public void cancelarPedidos(PedidoModificadoCamarero pedidoM) {
+		for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
+			if(pedidoM.getIdComanda() == pedidoH.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoH
+					.getProducto().getIdMenu()) {
+				pedidoH.setUnidades(pedidoH.getUnidades()-pedidoM.getUnidades());
+				pedidoH.setListos(pedidoH.getListos()-pedidoM.getUnidades());
+				fragmentHistorico.avisaAdaptador();
+			}
+		}
+		for(PedidosEntrantesCB pedidoE : pedidosEntrantes){
+			if(pedidoM.getIdComanda() == pedidoE.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoE
+					.getProducto().getIdMenu()) {
+				pedidoE.setUnidades(pedidoE.getUnidades()-pedidoM.getUnidades());
+				pedidoE.setListos(pedidoE.getListos()-pedidoM.getUnidades());
+				if(pedidoE.isTerminado()){
+					pedidosEntrantes.remove(pedidoE);
+				}
+			}
+		}	
+		lista.invalidateViews();
+		adaptador.notifyDataSetChanged();
+	}
 }

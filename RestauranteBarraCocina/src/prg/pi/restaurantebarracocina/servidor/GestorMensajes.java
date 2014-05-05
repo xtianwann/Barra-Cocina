@@ -105,7 +105,7 @@ public class GestorMensajes extends Thread {
 							@Override
 							public void run() {
 								DecodificadorCancelarPedido pedidos = new DecodificadorCancelarPedido(dom);
-								// inserte aquí lo que tiene que hacer pedidos.getCancelado()
+								principal.cancelarPedidos(pedidos.getCancelado());
 							}
 						});
 					}
