@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import prg.pi.restaurantebarracocina.MainActivity;
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorCancelarPedido;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaBarra;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorModificacionCamarero;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantesCB;
@@ -91,6 +92,20 @@ public class GestorMensajes extends Thread {
 							public void run() {
 								DecodificadorModificacionCamarero pedidos = new DecodificadorModificacionCamarero(dom);
 								principal.modificarUnidades(pedidos.getPedidosListos()[0]);
+							}
+						});
+					}
+				}).start();
+			}
+			if (tipo.equals("CancelarPedido")) {
+				new Thread(new Runnable() {
+
+					public void run() {
+						principal.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								DecodificadorCancelarPedido pedidos = new DecodificadorCancelarPedido(dom);
+								// inserte aquí lo que tiene que hacer pedidos.getCancelado()
 							}
 						});
 					}
