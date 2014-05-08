@@ -1,8 +1,5 @@
 package prg.pi.restaurantebarracocina.conexion;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -29,9 +26,6 @@ public class Cliente extends Thread {
 			NodeList nodeListTipo = dom.getElementsByTagName("tipo");
 			String tipo = nodeListTipo.item(0).getChildNodes().item(0)
 					.getNodeValue();
-
-			
-
 		} else {
 			System.out.println("Agotado tiempo de espera...");
 		}
@@ -49,7 +43,7 @@ public class Cliente extends Thread {
 	}
 
 	/**
-	 * Espera un mensaje del servidor durante cinco segundos
+	 * Espera un mensaje del servidor durante cinco segundoss
 	 * 
 	 * @return String de respuestas del servidor
 	 * @return null si excede el límite de tiempo
@@ -68,11 +62,6 @@ public class Cliente extends Thread {
 	 * Establece conexión con el servidor
 	 */
 	private void conexion() {
-		try {
-			conn = new Conexion("192.168.1.9", 27014);
-		} catch (IOException ex) {
-			Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null,
-					ex);
-		}
+		conn = new Conexion("192.168.43.112", 27014);
 	}
 }

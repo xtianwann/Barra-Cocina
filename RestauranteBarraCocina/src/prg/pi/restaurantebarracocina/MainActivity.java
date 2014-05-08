@@ -564,6 +564,8 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			if(pedidoM.getIdComanda() == pedidoH.getIdComanda()
 					&& pedidoM.getIdMenu() == pedidoH
 					.getProducto().getIdMenu()) {
+				Log.e("unidades", pedidoH.getUnidades()-pedidoM.getUnidades()+"");
+				Log.e("listos", pedidoH.getListos()-pedidoM.getUnidades()+"");
 				pedidoH.setUnidades(pedidoH.getUnidades()-pedidoM.getUnidades());
 				pedidoH.setListos(pedidoH.getListos()-pedidoM.getUnidades());
 				fragmentHistorico.avisaAdaptador();
