@@ -1,6 +1,8 @@
 package prg.pi.restaurantebarracocina.conexion;
 
 
+import java.io.IOException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -39,7 +41,15 @@ public class Cliente extends Thread {
 	 */
 	public void enviarMensaje(String msg) {
 		conexion();
-		conn.escribirMensaje(msg);
+		try {
+			conn.escribirMensaje(msg);
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -52,7 +62,15 @@ public class Cliente extends Thread {
 		String respuesta = null;
 		long espera = System.currentTimeMillis() + 10000;
 		do {
-			respuesta = conn.leerMensaje();
+			try {
+				respuesta = conn.leerMensaje();
+			} catch (NullPointerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} while (respuesta.length() == 0 || espera < System.currentTimeMillis());
 
 		return respuesta;
@@ -62,6 +80,14 @@ public class Cliente extends Thread {
 	 * Establece conexión con el servidor
 	 */
 	private void conexion() {
-		conn = new Conexion("192.168.20.3", 27000);
+		try {
+			conn = new Conexion("192.168.20.3", 27000);
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
