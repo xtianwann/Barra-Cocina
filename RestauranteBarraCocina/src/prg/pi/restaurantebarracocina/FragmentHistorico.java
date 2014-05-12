@@ -405,5 +405,9 @@ public class FragmentHistorico extends Fragment {
 	public void avisaAdaptador() {
 		adaptador.notifyDataSetChanged();
 	}
+
+	public void setHistoricos(ArrayList<PedidosEntrantesCB> historicos) {
+		this.historicos = historicos;
+	}
 	
 }

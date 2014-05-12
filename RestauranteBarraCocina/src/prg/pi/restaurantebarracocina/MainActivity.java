@@ -585,4 +585,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
+	
+	public void actualizarPedidos(ArrayList<PedidosEntrantesCB> pedidoActualizados){
+		pedidosEntrantes = pedidoActualizados;
+		fragmentHistorico.setHistoricos(pedidoActualizados);
+		fragmentHistorico.avisaAdaptador();
+		lista.invalidateViews();
+		adaptador.notifyDataSetChanged();
+	}
 }

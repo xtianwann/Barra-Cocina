@@ -5,21 +5,21 @@ import java.util.ArrayList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import prg.pi.restaurantebarracocina.restaurante.PedidoActualizado;
+import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
+import prg.pi.restaurantebarracocina.restaurante.Producto;
 
 public class DecodificadorInfoAcumulada {
 	
 	private Document dom;
-	private ArrayList<PedidoActualizado> pedidosActualizados;
+	private ArrayList<PedidosEntrantesCB> pedidosActualizados;
 	
 	public DecodificadorInfoAcumulada(Document dom){
 		this.dom = dom;
-		pedidosActualizados = new ArrayList<PedidoActualizado>();
+		pedidosActualizados = new ArrayList<PedidosEntrantesCB>();
 		extraerInfo();
 	}
 	
-	public ArrayList<PedidoActualizado> getInfoActualizada(){
+	public ArrayList<PedidosEntrantesCB> getInfoActualizada(){
 		return pedidosActualizados;
 	}
 	
@@ -39,7 +39,7 @@ public class DecodificadorInfoAcumulada {
 			int udServido = Integer.parseInt(atributos.item(9).getFirstChild().getNodeValue());
 			
 			// genera aquí el objeto
-			pedidosActualizados.add(new PedidoActualizado(nombreSeccion,nombreMesa,idMenu,idComanda, nombreProducto,nombreCantidad, unidades, udPedido, udListo, udServido));
+			pedidosActualizados.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades,new Producto(idMenu, nombreProducto,nombreCantidad), udListo));
 		}
 	}
 

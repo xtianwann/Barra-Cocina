@@ -62,6 +62,6 @@ public class Cliente extends Thread {
 	 * Establece conexión con el servidor
 	 */
 	private void conexion() {
-		conn = new Conexion("192.168.43.112", 27014);
+		conn = new Conexion("192.168.20.3", 27000);
 	}
 }
