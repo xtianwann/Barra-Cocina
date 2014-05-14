@@ -1,5 +1,6 @@
 package prg.pi.restaurantebarracocina;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -307,10 +308,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 						String mensaje = xmlEnviarComandaLista
 								.xmlToString(xmlEnviarComandaLista.getDOM());
 						Cliente c = new Cliente(mensaje);
-						c.run();
 						try {
-							c.join();
-						} catch (InterruptedException e) {
+							c.iniciar();
+						} catch (NullPointerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
