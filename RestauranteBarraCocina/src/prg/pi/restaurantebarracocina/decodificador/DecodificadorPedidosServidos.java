@@ -3,6 +3,7 @@ package prg.pi.restaurantebarracocina.decodificador;
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidoFinalizado;
@@ -25,8 +26,9 @@ public class DecodificadorPedidosServidos {
 	private void extraerServidos(){
 		NodeList nlServidos = dom.getElementsByTagName("servido");
 		for(int contadorServidos = 0; contadorServidos < nlServidos.getLength(); contadorServidos++){
-			int idComanda = Integer.parseInt(nlServidos.item(0).getFirstChild().getNodeValue());
-			int idMenu = Integer.parseInt(nlServidos.item(1).getFirstChild().getNodeValue());
+			Node servido = nlServidos.item(contadorServidos);
+			int idComanda = Integer.parseInt(servido.getChildNodes().item(0).getFirstChild().getNodeValue());
+			int idMenu = Integer.parseInt(servido.getChildNodes().item(1).getFirstChild().getNodeValue());
 			
 			pedidosFinalizados.add(new PedidoFinalizado(idComanda, idMenu));
 		}
