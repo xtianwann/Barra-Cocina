@@ -632,7 +632,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 	
 	public void actualizarPedidos(ArrayList<PedidosEntrantesCB> pedidoActualizados){
 		pedidosEntrantes = pedidoActualizados;
-		fragmentHistorico.setHistoricos(pedidoActualizados);
+		fragmentHistorico.dameHistoricos().clear();
+		for(PedidosEntrantesCB pedido : pedidoActualizados){
+			if(pedido.getListos() > 0)
+				fragmentHistorico.dameHistoricos().add(pedido);
+		}
 		fragmentHistorico.avisaAdaptador();
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
@@ -645,7 +649,10 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 	}
 	
 	public void todosServidos(PedidoFinalizado[] finalizados){
+		ArrayList<PedidosEntrantesCB> pedidosBorrar = new ArrayList<PedidosEntrantesCB>();
+		boolean encontrado = false;
 		for(PedidoFinalizado pedidoE : finalizados){
+			Log.e("metodo", "for finalizado");
 			for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
 				Log.e("pedidoH", "idCom: " + pedidoH.getIdComanda());
 				Log.e("pedidoE", "idcom: " + pedidoE.getIdComanda());
@@ -654,11 +661,16 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				Log.e("---", "--------------------------------");
 				if(pedidoH.getIdComanda() == pedidoE.getIdComanda() && pedidoH.getProducto().getIdMenu() == pedidoE.getIdMenu()){
 					Log.e("if", "entra");
-					fragmentHistorico.dameHistoricos().remove(pedidoH);
-					fragmentHistorico.avisaAdaptador();
+					encontrado = true;
+					pedidosBorrar.add(pedidoH);
 				}
 			}
 		}
-		
+		if(encontrado){
+			for(PedidosEntrantesCB p : pedidosBorrar){
+				fragmentHistorico.dameHistoricos().remove(p);
+			}
+			fragmentHistorico.avisaAdaptador();
+		}
 	}
 }

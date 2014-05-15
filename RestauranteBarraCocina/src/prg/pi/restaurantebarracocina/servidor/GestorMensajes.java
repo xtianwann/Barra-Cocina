@@ -72,7 +72,6 @@ public class GestorMensajes extends Thread {
 
 	public void run() {
 		try {
-			System.out.println("GestorMesaje: Mensaje!");
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder builder;
@@ -83,7 +82,6 @@ public class GestorMensajes extends Thread {
 
 			NodeList nodo = dom.getElementsByTagName("tipo");
 			String tipo = nodo.item(0).getChildNodes().item(0).getNodeValue();
-
 			if (tipo.equals("PedidoMesa")) {
 				new Thread(new Runnable() {
 
@@ -127,8 +125,9 @@ public class GestorMensajes extends Thread {
 				}).start();
 			}
 			if (tipo.equals("XMLInfoAcumulada")) {
+				Log.e("infoacumulada","entro");
 				new Thread(new Runnable() {
-
+					
 					public void run() {
 						principal.runOnUiThread(new Runnable() {
 							@Override
@@ -141,8 +140,8 @@ public class GestorMensajes extends Thread {
 				}).start();
 			}
 			if (tipo.equals("TodosServidos")) {
-				new Thread(new Runnable() {
 
+				new Thread(new Runnable() {
 					public void run() {
 						principal.runOnUiThread(new Runnable() {
 							@Override
