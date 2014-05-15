@@ -1,6 +1,5 @@
 package prg.pi.restaurantebarracocina;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -14,11 +13,15 @@ import prg.pi.restaurantebarracocina.conexion.Cliente;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
+import prg.pi.restaurantebarracocina.restaurante.PedidoFinalizado;
 import prg.pi.restaurantebarracocina.restaurante.PedidoModificadoCamarero;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
 import prg.pi.restaurantebarracocina.servidor.Servidor;
 import prg.pi.restaurantebarracocina.xml.XMLPedidosListos;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo.DetailedState;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.app.Activity;
@@ -61,6 +64,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 	private ArrayList<PedidosEntrantesCB> listos;
 	private NotificacionBarra notificacion;
 	private DrawerLayout drawerLayout;
+	private AlertDialog.Builder dialog;
 	private FragmentHistorico fragmentHistorico;
 
 	@Override
@@ -82,6 +86,46 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
+		final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		final android.net.NetworkInfo wifi = connMgr
+				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+		final android.net.NetworkInfo mobile = connMgr
+				.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		if (wifi.isAvailable()) {
+			if (wifi.getDetailedState() != DetailedState.CONNECTED) {
+				dialog = new AlertDialog.Builder(this);
+				dialog.setMessage("No se detecta señal wifi");
+				dialog.setCancelable(false);
+				dialog.setNeutralButton("OK",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.cancel();
+							}
+						});
+				dialog.show();
+			}
+		} else {
+			dialog = new AlertDialog.Builder(this);
+			dialog.setMessage("El wifi no esta activado");
+			dialog.setCancelable(false);
+			dialog.setNeutralButton("Activar",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							activarWifi();
+							try {
+								Thread.sleep(15000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							dialog.cancel();
+						}
+					});
+			dialog.show();
+		}
 		fragmentHistorico = (FragmentHistorico) getSupportFragmentManager()
 				.findFragmentById(R.id.historicosF);
 		fragmentHistorico.setHistoricoListener(this);
@@ -194,7 +238,9 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				int cambio = Integer.parseInt(calculadora.total.getText() + "");
 				if (seleccionado > -1) {
 					if (cambio <= pedidosEntrantes.get(seleccionado)
-							.getUnidades()) {
+							.getUnidades() && cambio >= fragmentHistorico.getHistoricos(
+									pedidosEntrantes.get(seleccionado))
+									.getListos()) {
 						pedidosEntrantes.get(seleccionado).setListos(cambio);
 						addListo();
 						adaptador.notifyDataSetChanged();
@@ -308,15 +354,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 						String mensaje = xmlEnviarComandaLista
 								.xmlToString(xmlEnviarComandaLista.getDOM());
 						Cliente c = new Cliente(mensaje);
-						try {
-							c.iniciar();
-						} catch (NullPointerException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						c.init();
 						terminarPedido();
 						listos.clear();
 						seleccionado = -1;
@@ -546,6 +584,9 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				if(pedidoH.getListos() > pedidoH.getUnidades()){
 					pedidoH.setListos(pedidoH.getUnidades());
 				}
+				if(pedidoH.getUnidades() == 0){
+					fragmentHistorico.dameHistoricos().remove(pedidoH);
+				}	
 				fragmentHistorico.avisaAdaptador();
 			}
 		}
@@ -595,5 +636,29 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		fragmentHistorico.avisaAdaptador();
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
+	}
+	
+	private void activarWifi() {
+		WifiManager wifiManager = (WifiManager) this
+				.getSystemService(Context.WIFI_SERVICE);
+		wifiManager.setWifiEnabled(true);
+	}
+	
+	public void todosServidos(PedidoFinalizado[] finalizados){
+		for(PedidoFinalizado pedidoE : finalizados){
+			for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
+				Log.e("pedidoH", "idCom: " + pedidoH.getIdComanda());
+				Log.e("pedidoE", "idcom: " + pedidoE.getIdComanda());
+				Log.e("pedidoH", "idMenu: " + pedidoH.getProducto().getIdMenu());
+				Log.e("pedidoE", "idMenu: " + pedidoE.getIdMenu());
+				Log.e("---", "--------------------------------");
+				if(pedidoH.getIdComanda() == pedidoE.getIdComanda() && pedidoH.getProducto().getIdMenu() == pedidoE.getIdMenu()){
+					Log.e("if", "entra");
+					fragmentHistorico.dameHistoricos().remove(pedidoH);
+					fragmentHistorico.avisaAdaptador();
+				}
+			}
+		}
+		
 	}
 }

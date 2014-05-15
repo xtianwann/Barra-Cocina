@@ -1,6 +1,5 @@
 package prg.pi.restaurantebarracocina;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
@@ -245,15 +244,7 @@ public class FragmentHistorico extends Fragment {
 												.xmlToString(xmlEnviarModificacion
 														.getDOM());
 										Cliente c = new Cliente(mensaje);
-										try {
-											c.iniciar();
-										} catch (NullPointerException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										} catch (IOException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
+										c.init();
 										historicoListener.onDeshacerPedido(pedido);
 										seleccionado = -1;
 										adaptador.notifyDataSetChanged();

@@ -6,8 +6,7 @@ import java.net.ConnectException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import prg.pi.restaurantebarracocina.decodificador.DecodificadorAcuseRecibo;
-import prg.pi.restaurantebarracocina.restaurante.Pedido;
+
 import Conexion.Conexion;
 import XML.XML;
 
@@ -25,25 +24,25 @@ public class Cliente {
 		this.mensaje = mensaje;
 	}
 
-	public void iniciar() throws IOException, NullPointerException {
-		enviarMensaje(mensaje);
-		respuesta = recibirMensaje();
+	public void init() {
+		try {
+			enviarMensaje(mensaje);
+			respuesta = recibirMensaje();
+		} catch (NullPointerException e){
+			throw new NullPointerException();
+		} catch (IOException e) {
+			throw new NullPointerException();
+		}
 		if (respuesta != null && respuesta.length() > 0) {
 			Document dom = XML.stringToXml(respuesta);
 			NodeList nodeListTipo = dom.getElementsByTagName("tipo");
 			String tipo = nodeListTipo.item(0).getChildNodes().item(0)
 					.getNodeValue();
-			try {
-				conn.cerrarConexion();
-			} catch (NullPointerException e) {
-			} catch (IOException e) {
-			}
-
 		} else {
 			try {
 				conn.cerrarConexion();
-			} catch (NullPointerException e) {
-
+			} catch (NullPointerException e){
+				
 			} catch (IOException e) {
 			}
 			System.out.println("Agotado tiempo de espera...");
@@ -87,6 +86,6 @@ public class Cliente {
 	 *             ,ConnectException
 	 */
 	private void conexion() throws IOException, NullPointerException {
-		conn = new Conexion("192.168.20.3", 27000);
+		conn = new Conexion("192.168.1.9", 27000);
 	}
 }

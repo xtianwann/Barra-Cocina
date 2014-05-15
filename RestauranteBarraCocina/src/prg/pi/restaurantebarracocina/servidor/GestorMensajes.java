@@ -30,6 +30,7 @@ import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaBarra;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorInfoAcumulada;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorModificacionCamarero;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantesCB;
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosServidos;
 import prg.pi.restaurantebarracocina.restaurante.Mesa;
 import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
 import prg.pi.restaurantebarracocina.restaurante.Pedido;
@@ -134,6 +135,20 @@ public class GestorMensajes extends Thread {
 							public void run() {
 								DecodificadorInfoAcumulada pedidos = new DecodificadorInfoAcumulada(dom);
 								principal.actualizarPedidos(pedidos.getInfoActualizada());
+							}
+						});
+					}
+				}).start();
+			}
+			if (tipo.equals("TodosServidos")) {
+				new Thread(new Runnable() {
+
+					public void run() {
+						principal.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								DecodificadorPedidosServidos pedidos = new DecodificadorPedidosServidos(dom);
+								principal.todosServidos(pedidos.getFinalizados());
 							}
 						});
 					}
