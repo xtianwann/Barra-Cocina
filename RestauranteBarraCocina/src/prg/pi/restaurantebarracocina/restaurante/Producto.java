@@ -10,7 +10,7 @@ public class Producto {
 		this.nombreProducto = nombreProducto;
 	}
 
-	public Producto(int idMenu, String nombreProducto,String cantidadPadre) {
+	public Producto(int idMenu, String nombreProducto, String cantidadPadre) {
 		this.idMenu = idMenu;
 		this.nombreProducto = nombreProducto;
 		this.cantidadPadre = cantidadPadre;

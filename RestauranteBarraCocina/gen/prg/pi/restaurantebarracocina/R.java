@@ -17,8 +17,8 @@ public final class R {
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f050000;
-        public static final int activity_vertical_margin=0x7f050001;
+        public static final int activity_horizontal_margin=0x7f060000;
+        public static final int activity_vertical_margin=0x7f060001;
     }
     public static final class drawable {
         public static final int acciones_color=0x7f020000;
@@ -29,45 +29,46 @@ public final class R {
         public static final int resumen_color=0x7f020005;
     }
     public static final class id {
-        public static final int action_settings=0x7f090026;
-        public static final int c0=0x7f090013;
-        public static final int c1=0x7f09000f;
-        public static final int c2=0x7f090010;
-        public static final int c3=0x7f090011;
-        public static final int c4=0x7f09000d;
-        public static final int c5=0x7f09000c;
-        public static final int c6=0x7f09000b;
-        public static final int c7=0x7f090007;
-        public static final int c8=0x7f090008;
-        public static final int c9=0x7f090009;
-        public static final int cambiar=0x7f09000a;
-        public static final int cantidadP=0x7f09001c;
-        public static final int cantidadPendiente=0x7f090023;
-        public static final int ce=0x7f090014;
-        public static final int deshacer=0x7f090020;
-        public static final int drawer_layout=0x7f090000;
-        public static final int enviar=0x7f090015;
-        public static final int estado=0x7f090019;
-        public static final int estadoText=0x7f090003;
-        public static final int historico=0x7f09001f;
-        public static final int historicosF=0x7f090016;
-        public static final int lista=0x7f090004;
-        public static final int listoP=0x7f09001e;
-        public static final int listoPendiente=0x7f090025;
-        public static final int mas=0x7f09000e;
-        public static final int menos=0x7f090012;
-        public static final int mesaP=0x7f09001b;
-        public static final int mesaPendiente=0x7f090022;
-        public static final int producto=0x7f090018;
-        public static final int productoP=0x7f09001d;
-        public static final int productoPendiente=0x7f090024;
-        public static final int productoText=0x7f090002;
-        public static final int seccionP=0x7f09001a;
-        public static final int seccionPendiente=0x7f090021;
-        public static final int todo=0x7f090006;
-        public static final int total=0x7f090005;
-        public static final int unidad=0x7f090017;
-        public static final int unidadText=0x7f090001;
+        public static final int apagado=0x7f0a0027;
+        public static final int c0=0x7f0a0013;
+        public static final int c1=0x7f0a000f;
+        public static final int c2=0x7f0a0010;
+        public static final int c3=0x7f0a0011;
+        public static final int c4=0x7f0a000d;
+        public static final int c5=0x7f0a000c;
+        public static final int c6=0x7f0a000b;
+        public static final int c7=0x7f0a0007;
+        public static final int c8=0x7f0a0008;
+        public static final int c9=0x7f0a0009;
+        public static final int cambiar=0x7f0a000a;
+        public static final int cantidadP=0x7f0a001c;
+        public static final int cantidadPendiente=0x7f0a0023;
+        public static final int ce=0x7f0a0014;
+        public static final int configuracion=0x7f0a0026;
+        public static final int deshacer=0x7f0a0020;
+        public static final int drawer_layout=0x7f0a0000;
+        public static final int enviar=0x7f0a0015;
+        public static final int estado=0x7f0a0019;
+        public static final int estadoText=0x7f0a0003;
+        public static final int historico=0x7f0a001f;
+        public static final int historicosF=0x7f0a0016;
+        public static final int lista=0x7f0a0004;
+        public static final int listoP=0x7f0a001e;
+        public static final int listoPendiente=0x7f0a0025;
+        public static final int mas=0x7f0a000e;
+        public static final int menos=0x7f0a0012;
+        public static final int mesaP=0x7f0a001b;
+        public static final int mesaPendiente=0x7f0a0022;
+        public static final int producto=0x7f0a0018;
+        public static final int productoP=0x7f0a001d;
+        public static final int productoPendiente=0x7f0a0024;
+        public static final int productoText=0x7f0a0002;
+        public static final int seccionP=0x7f0a001a;
+        public static final int seccionPendiente=0x7f0a0021;
+        public static final int todo=0x7f0a0006;
+        public static final int total=0x7f0a0005;
+        public static final int unidad=0x7f0a0017;
+        public static final int unidadText=0x7f0a0001;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -76,15 +77,15 @@ public final class R {
         public static final int historico_list=0x7f030003;
     }
     public static final class menu {
-        public static final int main=0x7f080000;
+        public static final int main=0x7f090000;
     }
     public static final class raw {
-        public static final int gestures=0x7f040000;
+        public static final int gestures=0x7f050000;
     }
     public static final class string {
-        public static final int action_settings=0x7f060001;
-        public static final int app_name=0x7f060000;
-        public static final int hello_world=0x7f060002;
+        public static final int action_settings=0x7f070001;
+        public static final int app_name=0x7f070000;
+        public static final int hello_world=0x7f070002;
     }
     public static final class style {
         /** 
@@ -108,10 +109,13 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
+        public static final int AppTheme=0x7f080001;
+    }
+    public static final class xml {
+        public static final int preferencias=0x7f040000;
     }
 }

@@ -14,7 +14,7 @@ public class PedidosEntrantesCB {
 	private Producto producto;
 	private int listos;
 
-	public PedidosEntrantesCB(String nombreSeccion, String nombreMesa, int idComanda, int unidades,Producto producto, int listos) {
+	public PedidosEntrantesCB(String nombreSeccion, String nombreMesa, int idComanda, int unidades, Producto producto, int listos) {
 		this.nombreSeccion = nombreSeccion;
 		this.nombreMesa = nombreMesa;
 		this.idComanda = idComanda;

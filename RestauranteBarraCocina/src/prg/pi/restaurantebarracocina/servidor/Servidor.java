@@ -28,7 +28,6 @@ public class Servidor extends Service{
     public Servidor(MainActivity principal){
     	this.principal = principal;
         try {
-        	//hiloPrincipal = new HiloPrincipal(27000);
             hiloPrincipal = new HiloPrincipal(27000);
             hiloPrincipal.start();
         } catch (IOException ex) {

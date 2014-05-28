@@ -7,19 +7,24 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 
+
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaOn;
 import Conexion.Conexion;
 import XML.XML;
 
 /**
- * @author Juan Gabriel P√©rez Leo
- * @author Cristian Mar√≠n Honor
+ * @author Juan Gabriel PÈrez Leo
+ * @author Cristian MarÌn Honor
  */
 public class Cliente {
 	private Conexion conn;
 	private String mensaje;
 	private String respuesta;
+	private String ipServidor;
+	private DecodificadorCocinaOn decoCocinaOn;
 
-	public Cliente(String mensaje) {
+	public Cliente(String mensaje,String ipServidor) {
+		this.ipServidor = ipServidor;
 		respuesta = "";
 		this.mensaje = mensaje;
 	}
@@ -36,8 +41,11 @@ public class Cliente {
 		if (respuesta != null && respuesta.length() > 0) {
 			Document dom = XML.stringToXml(respuesta);
 			NodeList nodeListTipo = dom.getElementsByTagName("tipo");
-			String tipo = nodeListTipo.item(0).getChildNodes().item(0)
-					.getNodeValue();
+			String tipo = nodeListTipo.item(0).getChildNodes().item(0).getNodeValue();
+			
+			if(tipo.equals("CocinaOn")){
+				decoCocinaOn = new DecodificadorCocinaOn(dom);
+			}
 		} else {
 			try {
 				conn.cerrarConexion();
@@ -50,11 +58,10 @@ public class Cliente {
 	}
 
 	/**
-	 * Establece conexi√≥n con el servidor y env√≠a el mensaje pasado por
-	 * par√°metro
+	 * Establece conexiÛn con el servidor y envÌa el mensaje pasado por
+	 * par·metro
 	 * 
-	 * @param msg
-	 *            mensaje a enviar
+	 * @param msg mensaje a enviar
 	 * @throws IOException
 	 * @throws ConnectException
 	 */
@@ -68,7 +75,7 @@ public class Cliente {
 	 * Espera un mensaje del servidor durante cinco segundos
 	 * 
 	 * @return String de respuestas del servidor
-	 * @return null si excede el l√≠mite de tiempo
+	 * @return null si excede el lÌmite de tiempo
 	 */
 	public String recibirMensaje() throws IOException, NullPointerException {
 		String respuesta = null;
@@ -80,13 +87,17 @@ public class Cliente {
 	}
 
 	/**
-	 * Establece conexi√≥n con el servidor
+	 * Establece conexiÛn con el servidor
 	 * 
-	 * @throws IOException
-	 *             ,ConnectException
+	 * @throws IOExceptionb,ConnectException
 	 */
 	private void conexion() throws IOException, NullPointerException {
-		//conn = new Conexion("192.168.1.9", 27000);
-		conn = new Conexion("192.168.20.3", 27000);
+		//conn = new Conexion("192.168.1.9", 27000); // juan
+		//conn = new Conexion("192.168.20.3", 27000); // cristian
+		conn = new Conexion(ipServidor, 27000); // portatil
+	}
+	
+	public DecodificadorCocinaOn getDecoCocinaOn(){
+		return decoCocinaOn;
 	}
 }

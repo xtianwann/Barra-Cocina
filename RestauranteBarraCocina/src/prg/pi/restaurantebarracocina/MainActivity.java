@@ -1,47 +1,41 @@
 package prg.pi.restaurantebarracocina;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 
 import prg.pi.restaurantebarracocina.FragmentHistorico.HistoricoListener;
+import prg.pi.restaurantebarracocina.MainActivity.PendientesThread;
 import prg.pi.restaurantebarracocina.conexion.Cliente;
-import prg.pi.restaurantebarracocina.restaurante.MesaDestino;
-import prg.pi.restaurantebarracocina.restaurante.Pedido;
-import prg.pi.restaurantebarracocina.restaurante.Mesa;
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaOn;
+import prg.pi.restaurantebarracocina.preferencias.PreferenciasSet;
 import prg.pi.restaurantebarracocina.restaurante.PedidoFinalizado;
 import prg.pi.restaurantebarracocina.restaurante.PedidoModificadoCamarero;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
-import prg.pi.restaurantebarracocina.restaurante.Producto;
 import prg.pi.restaurantebarracocina.servidor.Servidor;
+import prg.pi.restaurantebarracocina.xml.XMLCocinaOn;
+import prg.pi.restaurantebarracocina.xml.XMLLogout;
 import prg.pi.restaurantebarracocina.xml.XMLPedidosListos;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.DetailedState;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.app.Activity;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.gesture.Gesture;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
-import android.gesture.GestureOverlayView;
-import android.gesture.GestureOverlayView.OnGesturePerformedListener;
-import android.gesture.Prediction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -51,6 +45,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends FragmentActivity implements HistoricoListener {
@@ -66,6 +61,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 	private DrawerLayout drawerLayout;
 	private AlertDialog.Builder dialog;
 	private FragmentHistorico fragmentHistorico;
+	private static SharedPreferences preferencias;
+	private DecodificadorCocinaOn decoCocinaOn;
+	private PendientesThread hilo;
+	private ProgressDialog pDialog;
+	android.net.NetworkInfo wifi;
+	ConnectivityManager connMgr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +87,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
-		final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-		final android.net.NetworkInfo wifi = connMgr
-				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+		connMgr = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-		final android.net.NetworkInfo mobile = connMgr
+		android.net.NetworkInfo mobile = connMgr
 				.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 		if (wifi.isAvailable()) {
 			if (wifi.getDetailedState() != DetailedState.CONNECTED) {
@@ -100,7 +102,8 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				dialog.setNeutralButton("OK",
 						new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(DialogInterface dialog,
+									int which) {
 								dialog.cancel();
 							}
 						});
@@ -133,12 +136,104 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		iniciarCalculadora();
 		prepararListeners();
-		// Pruebas en el trabajo
-		// pedidosEntrantes.add(new PedidosEntrantesCB("Abajo", "Rincon", 1, 3,
-		// new Producto(1, "Chocos", "Racion"), 0));
-		// pedidosEntrantes.add(new PedidosEntrantesCB("Arriba", "Centro", 2, 5,
-		// new Producto(2, "Huevas", "Tapa"), 0));
-		// ///////////////////////////////////////////////////////////
+		decoCocinaOn = null;
+		hilo = new PendientesThread();
+		hilo.start();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return true;
+		/** true -> el menú ya está visible */
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case R.id.configuracion:
+			startActivity(new Intent(this, PreferenciasSet.class));
+			break;
+		case R.id.apagado:
+			wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			if (comprobarSenalWifi(wifi)) {
+				new LogoutAsincrono().execute();
+				finish();
+			} else {
+				dialog = new AlertDialog.Builder(MainActivity.this);
+				dialog.setMessage("No se detecta señal wifi, si continua su usuario no se deslogueará del sistema");
+				dialog.setCancelable(true);
+				dialog.setNeutralButton("Continuar",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.cancel();
+							}
+						});
+				dialog.show();
+			}
+			break;
+		}
+
+		return true;
+		/** true -> consumimos el item, no se propaga */
+	}
+
+	class PendientesThread extends Thread {
+		public void run() {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					XMLCocinaOn xmlPendientes = new XMLCocinaOn();
+					String mensaje = xmlPendientes.xmlToString(xmlPendientes
+							.getDOM());
+					Log.e("ipServidor", getIpServidor());
+					Cliente c = new Cliente(mensaje, getIpServidor());
+					try {
+						c.init();
+						decoCocinaOn = c.getDecoCocinaOn();
+						actualizarPedidos(decoCocinaOn.getPedidosPrincipal());
+					} catch (NullPointerException e) {
+						dialog = new AlertDialog.Builder(MainActivity.this);
+						dialog.setMessage("No se ha podido conectar al servidor.Compruebe los parametros en la preferencias.");
+						dialog.setCancelable(false);
+						dialog.setPositiveButton("Reintentar",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										hilo = new PendientesThread();
+										hilo.start();
+										dialog.cancel();
+									}
+								});
+						dialog.setNegativeButton("Preferencias",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										startActivity(new Intent(
+												MainActivity.this,
+												PreferenciasSet.class));
+										mostrarDialogo();
+									}
+								});
+						dialog.show();
+					}
+				}
+			});
+		}
+	}
+
+	public void mostrarDialogo() {
+		dialog.show();
 	}
 
 	private class AdaptadorComanda extends BaseAdapter {
@@ -237,8 +332,14 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			public void onClick(View view) {
 				int cambio = Integer.parseInt(calculadora.total.getText() + "");
 				if (seleccionado > -1) {
-					if (cambio <= pedidosEntrantes.get(seleccionado)
-							.getUnidades() && cambio >= fragmentHistorico.getHistoricos(
+					if (fragmentHistorico.getHistoricos(pedidosEntrantes
+							.get(seleccionado)) == null) {
+						pedidosEntrantes.get(seleccionado).setListos(cambio);
+						addListo();
+						adaptador.notifyDataSetChanged();
+					} else if (cambio <= pedidosEntrantes.get(seleccionado)
+							.getUnidades()
+							&& cambio >= fragmentHistorico.getHistoricos(
 									pedidosEntrantes.get(seleccionado))
 									.getListos()) {
 						pedidosEntrantes.get(seleccionado).setListos(cambio);
@@ -353,7 +454,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 						Log.e("size", listos.size() + "");
 						String mensaje = xmlEnviarComandaLista
 								.xmlToString(xmlEnviarComandaLista.getDOM());
-						Cliente c = new Cliente(mensaje);
+						Cliente c = new Cliente(mensaje, getIpServidor());
 						c.init();
 						terminarPedido();
 						listos.clear();
@@ -576,101 +677,157 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 	}
 
 	public void modificarUnidades(PedidoModificadoCamarero pedidoM) {
-		for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
-			if(pedidoM.getIdComanda() == pedidoH.getIdComanda()
-					&& pedidoM.getIdMenu() == pedidoH
-					.getProducto().getIdMenu()) {
+		for (PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()) {
+			if (pedidoM.getIdComanda() == pedidoH.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoH.getProducto().getIdMenu()) {
 				pedidoH.setUnidades(pedidoM.getUnidades());
-				if(pedidoH.getListos() > pedidoH.getUnidades()){
+				if (pedidoH.getListos() > pedidoH.getUnidades()) {
 					pedidoH.setListos(pedidoH.getUnidades());
 				}
-				if(pedidoH.getUnidades() == 0){
+				if (pedidoH.getUnidades() == 0) {
 					fragmentHistorico.dameHistoricos().remove(pedidoH);
-				}	
+				}
 				fragmentHistorico.avisaAdaptador();
 			}
 		}
-		for(PedidosEntrantesCB pedidoE : pedidosEntrantes){
-			if(pedidoM.getIdComanda() == pedidoE.getIdComanda()
-					&& pedidoM.getIdMenu() == pedidoE
-					.getProducto().getIdMenu()) {
+		for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
+			if (pedidoM.getIdComanda() == pedidoE.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoE.getProducto().getIdMenu()) {
 				pedidoE.setUnidades(pedidoM.getUnidades());
-				if(pedidoE.isTerminado()){
+				if (pedidoE.isTerminado()) {
 					pedidosEntrantes.remove(pedidoE);
 				}
-			}
-		}	
-		lista.invalidateViews();
-		adaptador.notifyDataSetChanged();
-	}
-	public void cancelarPedidos(PedidoModificadoCamarero pedidoM) {
-		for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
-			if(pedidoM.getIdComanda() == pedidoH.getIdComanda()
-					&& pedidoM.getIdMenu() == pedidoH
-					.getProducto().getIdMenu()) {
-				Log.e("unidades", pedidoH.getUnidades()-pedidoM.getUnidades()+"");
-				Log.e("listos", pedidoH.getListos()-pedidoM.getUnidades()+"");
-				pedidoH.setUnidades(pedidoH.getUnidades()-pedidoM.getUnidades());
-				pedidoH.setListos(pedidoH.getListos()-pedidoM.getUnidades());
-				fragmentHistorico.avisaAdaptador();
 			}
 		}
-		for(PedidosEntrantesCB pedidoE : pedidosEntrantes){
-			if(pedidoM.getIdComanda() == pedidoE.getIdComanda()
-					&& pedidoM.getIdMenu() == pedidoE
-					.getProducto().getIdMenu()) {
-				pedidoE.setUnidades(pedidoE.getUnidades()-pedidoM.getUnidades());
-				pedidoE.setListos(pedidoE.getListos()-pedidoM.getUnidades());
-				if(pedidoE.isTerminado()){
-					pedidosEntrantes.remove(pedidoE);
-				}
-			}
-		}	
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-	
-	public void actualizarPedidos(ArrayList<PedidosEntrantesCB> pedidoActualizados){
-		pedidosEntrantes = pedidoActualizados;
+
+	public void cancelarPedidos(PedidoModificadoCamarero pedidoM) {
+		for (PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()) {
+			if (pedidoM.getIdComanda() == pedidoH.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoH.getProducto().getIdMenu()) {
+				Log.e("unidades", pedidoH.getUnidades() - pedidoM.getUnidades()
+						+ "");
+				Log.e("listos", pedidoH.getListos() - pedidoM.getUnidades()
+						+ "");
+				pedidoH.setUnidades(pedidoH.getUnidades()
+						- pedidoM.getUnidades());
+				pedidoH.setListos(pedidoH.getListos() - pedidoM.getUnidades());
+			}
+		}
+		lista.invalidateViews();
+		adaptador.notifyDataSetChanged();
+		fragmentHistorico.avisaAdaptador();
+	}
+
+	public void actualizarPedidos(
+			ArrayList<PedidosEntrantesCB> pedidoActualizados) {
+		pedidosEntrantes.clear();
+		for (PedidosEntrantesCB pedido : pedidoActualizados) {
+			if (!pedido.isTerminado())
+				pedidosEntrantes.add(pedido);
+		}
 		fragmentHistorico.dameHistoricos().clear();
-		for(PedidosEntrantesCB pedido : pedidoActualizados){
-			if(pedido.getListos() > 0)
+		for (PedidosEntrantesCB pedido : pedidoActualizados) {
+			if (pedido.getListos() > 0)
 				fragmentHistorico.dameHistoricos().add(pedido);
 		}
 		fragmentHistorico.avisaAdaptador();
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-	
+
 	private void activarWifi() {
 		WifiManager wifiManager = (WifiManager) this
 				.getSystemService(Context.WIFI_SERVICE);
 		wifiManager.setWifiEnabled(true);
 	}
-	
-	public void todosServidos(PedidoFinalizado[] finalizados){
+
+	public void todosServidos(PedidoFinalizado[] finalizados) {
 		ArrayList<PedidosEntrantesCB> pedidosBorrar = new ArrayList<PedidosEntrantesCB>();
 		boolean encontrado = false;
-		for(PedidoFinalizado pedidoE : finalizados){
+		for (PedidoFinalizado pedidoE : finalizados) {
 			Log.e("metodo", "for finalizado");
-			for(PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()){
+			for (PedidosEntrantesCB pedidoH : fragmentHistorico
+					.dameHistoricos()) {
 				Log.e("pedidoH", "idCom: " + pedidoH.getIdComanda());
 				Log.e("pedidoE", "idcom: " + pedidoE.getIdComanda());
 				Log.e("pedidoH", "idMenu: " + pedidoH.getProducto().getIdMenu());
 				Log.e("pedidoE", "idMenu: " + pedidoE.getIdMenu());
 				Log.e("---", "--------------------------------");
-				if(pedidoH.getIdComanda() == pedidoE.getIdComanda() && pedidoH.getProducto().getIdMenu() == pedidoE.getIdMenu()){
+				if (pedidoH.getIdComanda() == pedidoE.getIdComanda()
+						&& pedidoH.getProducto().getIdMenu() == pedidoE
+								.getIdMenu()) {
 					Log.e("if", "entra");
 					encontrado = true;
 					pedidosBorrar.add(pedidoH);
 				}
 			}
 		}
-		if(encontrado){
-			for(PedidosEntrantesCB p : pedidosBorrar){
+		if (encontrado) {
+			for (PedidosEntrantesCB p : pedidosBorrar) {
 				fragmentHistorico.dameHistoricos().remove(p);
 			}
 			fragmentHistorico.avisaAdaptador();
+		}
+	}
+
+	public static String getIpServidor() {
+		return preferencias.getString("ipServidor", null) + "";
+	}
+
+	public boolean comprobarSenalWifi(android.net.NetworkInfo wifi) {
+		boolean resultado = false;
+		if (wifi.getDetailedState() == DetailedState.CONNECTED)
+			resultado = true;
+		return resultado;
+	}
+
+	public class LogoutAsincrono extends AsyncTask<Void, Void, Boolean> {
+
+		protected void onPreExecute() {
+			pDialog = new ProgressDialog(MainActivity.this);
+			pDialog.setMessage("Saliendo...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			boolean resultado = true;
+
+			XMLLogout xmlLogout = new XMLLogout();
+			String mensaje = xmlLogout.xmlToString(xmlLogout.getDOM());
+			Cliente cliente = new Cliente(mensaje, getIpServidor());
+			try {
+				cliente.init();
+				SystemClock.sleep(2000);
+			} catch (NullPointerException e) {
+				resultado = false;
+				return resultado;
+			}
+			return resultado;
+		}
+
+		protected void onPostExecute(Boolean resultado) {
+			pDialog.dismiss();
+			if (resultado) {
+				finish();
+			} else {
+				Toast.makeText(MainActivity.this,
+						"Se ha producido algún error, inténtalo de nuevo",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (pDialog != null && pDialog.isShowing()) {
+			pDialog.cancel();
 		}
 	}
 }
