@@ -13,6 +13,7 @@ public class PedidosEntrantesCB {
 	private int unidades;
 	private Producto producto;
 	private int listos;
+	private boolean servido;
 
 	public PedidosEntrantesCB(String nombreSeccion, String nombreMesa, int idComanda, int unidades, Producto producto, int listos) {
 		this.nombreSeccion = nombreSeccion;
@@ -21,6 +22,7 @@ public class PedidosEntrantesCB {
 		this.unidades = unidades;
 		this.producto = producto;
 		this.listos = listos;
+		this.servido = false;
 	}
 
 	public String getNombreSeccion() {
@@ -72,6 +74,13 @@ public class PedidosEntrantesCB {
 	}
 	public boolean isTerminado(){
 		return listos >= unidades;
+	}
+	public boolean isServido() {
+		return servido;
+	}
+
+	public void setServido(boolean servido) {
+		this.servido = servido;
 	}
 	
 }

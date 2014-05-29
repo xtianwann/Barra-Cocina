@@ -8,6 +8,8 @@ import org.w3c.dom.NodeList;
 
 
 
+
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorAcuseRecibo;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaOn;
 import Conexion.Conexion;
 import XML.XML;
@@ -22,7 +24,7 @@ public class Cliente {
 	private String respuesta;
 	private String ipServidor;
 	private DecodificadorCocinaOn decoCocinaOn;
-
+	private DecodificadorAcuseRecibo decoAcuse;
 	public Cliente(String mensaje,String ipServidor) {
 		this.ipServidor = ipServidor;
 		respuesta = "";
@@ -45,6 +47,9 @@ public class Cliente {
 			
 			if(tipo.equals("CocinaOn")){
 				decoCocinaOn = new DecodificadorCocinaOn(dom);
+			}
+			if(tipo.equals("AcuseRecibo")){
+				decoAcuse = new DecodificadorAcuseRecibo(dom);
 			}
 		} else {
 			try {
@@ -99,5 +104,9 @@ public class Cliente {
 	
 	public DecodificadorCocinaOn getDecoCocinaOn(){
 		return decoCocinaOn;
+	}
+	
+	public DecodificadorAcuseRecibo getDecoAcuse(){
+		return decoAcuse;
 	}
 }

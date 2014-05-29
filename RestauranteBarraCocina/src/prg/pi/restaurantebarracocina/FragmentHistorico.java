@@ -29,6 +29,7 @@ public class FragmentHistorico extends Fragment {
 	private ArrayList<PedidosEntrantesCB> historicos = new ArrayList<PedidosEntrantesCB>();
 	private int seleccionado = -1;
 	private AdaptadorHistorico adaptador;
+	private ArrayList<PedidosEntrantesCB> historicosServidos = new ArrayList<PedidosEntrantesCB>();
 
 	public AdaptadorHistorico getAdaptador() {
 		return adaptador;
@@ -239,23 +240,53 @@ public class FragmentHistorico extends Fragment {
 												MainActivity.getIpServidor());
 										try {
 											c.init();
-											if (pedido.getUnidades() == pedido.getListos()
-													|| pedido.getListos() == 0) {
-												pedido.setListos(0);
-												historicos.remove(pedido);
+											try {
+												Thread.sleep(2000);
+											} catch (InterruptedException e) {
+												// TODO Auto-generated catch
+												// block
+												e.printStackTrace();
 											}
-											historicoListener
-													.onDeshacerPedido(pedido);
-											seleccionado = -1;
-											adaptador.notifyDataSetChanged();
+											String respuesta[] = c
+													.getDecoAcuse()
+													.getRespuesta();
+											if (respuesta[0].equals("NO")) {
+												pedido.setListos(listoAnterior);
+												dialog = new AlertDialog.Builder(
+														getView().getContext());
+												dialog.setMessage(respuesta[1]);
+												dialog.setCancelable(false);
+												dialog.setNeutralButton(
+														"OK",
+														new DialogInterface.OnClickListener() {
+															@Override
+															public void onClick(
+																	DialogInterface dialog,
+																	int which) {
+																listaHistorico.invalidateViews();
+																adaptador.notifyDataSetChanged();
+																dialog.cancel();
+															}
+														});
+												dialog.show();
+											} else {
+												if (pedido.getUnidades() == pedido
+														.getListos()
+														|| pedido.getListos() == 0) {
+													pedido.setListos(0);
+													historicos.remove(pedido);
+												}
+												historicoListener
+														.onDeshacerPedido(pedido);
+												seleccionado = -1;
+												adaptador
+														.notifyDataSetChanged();
+											}
 										} catch (NullPointerException e) {
-											Log.e("size",
-													historicos
-															.size()
-															+ "");
+											Log.e("size", historicos.size()
+													+ "");
 											Log.e("listoAnterior",
-													listoAnterior
-															+ "");
+													listoAnterior + "");
 											dialog = new AlertDialog.Builder(
 													getView().getContext());
 											dialog.setMessage("No se ha podido conectar al servidor");
@@ -439,6 +470,15 @@ public class FragmentHistorico extends Fragment {
 
 	public void setHistoricos(ArrayList<PedidosEntrantesCB> historicos) {
 		this.historicos = historicos;
+	}
+
+	public ArrayList<PedidosEntrantesCB> getHistoricosServidos() {
+		return historicosServidos;
+	}
+
+	public void setHistoricosServidos(
+			ArrayList<PedidosEntrantesCB> historicosServidos) {
+		this.historicosServidos = historicosServidos;
 	}
 
 }
