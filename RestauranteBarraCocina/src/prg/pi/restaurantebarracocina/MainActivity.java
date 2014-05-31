@@ -847,4 +847,42 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			pDialog.cancel();
 		}
 	}
+
+	public void finalizarComanda(int idCom) {
+		ArrayList <PedidosEntrantesCB> pedidosBorrar = new ArrayList<PedidosEntrantesCB>();
+		
+		for(PedidosEntrantesCB pedido : pedidosEntrantes){
+			if(pedido.getIdComanda() == idCom)
+				pedidosBorrar.add(pedido);
+		}
+		
+		for(PedidosEntrantesCB pedido : pedidosBorrar)
+			pedidosEntrantes.remove(pedido);
+		
+		pedidosBorrar.clear();
+		
+		for(PedidosEntrantesCB pedido : fragmentHistorico.dameHistoricos()){
+			if(pedido.getIdComanda() == idCom)
+				pedidosBorrar.add(pedido);
+		}
+		
+		for(PedidosEntrantesCB pedido : pedidosBorrar)
+			fragmentHistorico.dameHistoricos().remove(pedido);
+		
+		pedidosBorrar.clear();
+		
+		for(PedidosEntrantesCB pedido : fragmentHistorico.getHistoricosServidos()){
+			if(pedido.getIdComanda() == idCom)
+				pedidosBorrar.add(pedido);
+		}
+		
+		for(PedidosEntrantesCB pedido : pedidosBorrar)
+			fragmentHistorico.getHistoricosServidos().remove(pedido);
+		
+		pedidosBorrar = null;
+		
+		lista.invalidateViews();
+		adaptador.notifyDataSetChanged();
+		fragmentHistorico.avisaAdaptador();
+	}
 }

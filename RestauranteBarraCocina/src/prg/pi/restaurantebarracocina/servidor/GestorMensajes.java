@@ -152,7 +152,7 @@ public class GestorMensajes extends Thread {
 							@Override
 							public void run() {
 								DecodificadorComandaAcabada finComanda = new DecodificadorComandaAcabada(dom);
-								// pon aquí lo que falta
+								principal.finalizarComanda(finComanda.getIdcomandaCerrada());
 							}
 						});
 					}
