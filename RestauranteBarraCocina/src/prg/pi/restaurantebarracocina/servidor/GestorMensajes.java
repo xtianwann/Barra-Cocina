@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import prg.pi.restaurantebarracocina.MainActivity;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCancelarPedido;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCocinaBarra;
+import prg.pi.restaurantebarracocina.decodificador.DecodificadorComandaAcabada;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorInfoAcumulada;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorModificacionCamarero;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantesCB;
@@ -139,6 +140,19 @@ public class GestorMensajes extends Thread {
 							public void run() {
 								DecodificadorPedidosServidos pedidos = new DecodificadorPedidosServidos(dom);
 								principal.todosServidos(pedidos.getFinalizados());
+							}
+						});
+					}
+				}).start();
+			}
+			if (tipo.equals("ComandaAcabada")) {
+				new Thread(new Runnable() {
+					public void run() {
+						principal.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								DecodificadorComandaAcabada finComanda = new DecodificadorComandaAcabada(dom);
+								// pon aquí lo que falta
 							}
 						});
 					}
