@@ -465,7 +465,8 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			}
 		}).start();
 	}
-	//Me lo tengo que mirar
+
+	// Me lo tengo que mirar
 	public void addPedidos(PedidosEntrantesCB[] pedidosE) {
 		boolean encontradoH;
 		boolean encontradoE;
@@ -477,6 +478,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				if (pedido.getIdComanda() == pedidoH.getIdComanda()
 						&& pedido.getProducto().getIdMenu() == pedidoH
 								.getProducto().getIdMenu()) {
+					Log.e("pedidoH", true + "");
 					pedidoH.setUnidades(pedidoH.getUnidades()
 							+ pedido.getUnidades());
 					encontradoH = true;
@@ -489,6 +491,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				}
 			}
 			if (!encontradoH) {
+				Log.e("encontradoH", false + "");
 				encontradoE = false;
 				for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
 					if (pedido.getIdComanda() == pedidoE.getIdComanda()
@@ -496,35 +499,45 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 									.getProducto().getIdMenu()) {
 						pedidoE.setUnidades(pedidoE.getUnidades()
 								+ pedido.getUnidades());
+						Log.e("pedidoE", true + "");
 						encontradoE = true;
 						break;
 					}
 				}
-				if (!encontradoE)
-					for(PedidosEntrantesCB pedidoS : fragmentHistorico.getHistoricosServidos()){
-						if(pedidoS.getIdComanda() == pedido.getIdComanda() && pedidoS.getProducto().getIdMenu() == pedido.getProducto().getIdMenu()){
-							pedido.setUnidades(pedido.getUnidades()+pedidoS.getUnidades());
+				if (!encontradoE) {
+					Log.e("encontradoE", false + "");
+					for (PedidosEntrantesCB pedidoS : fragmentHistorico
+							.getHistoricosServidos()) {
+						if (pedidoS.getIdComanda() == pedido.getIdComanda()
+								&& pedidoS.getProducto().getIdMenu() == pedido
+										.getProducto().getIdMenu()) {
+							pedido.setUnidades(pedido.getUnidades()
+									+ pedidoS.getUnidades());
 							pedido.setListos(pedidoS.getListos());
 							fragmentHistorico.dameHistoricos().add(pedido);
-							fragmentHistorico.getHistoricosServidos().remove(pedidoS);
+							fragmentHistorico.getHistoricosServidos().remove(
+									pedidoS);
 							break;
 						}
 					}
 					pedidosEntrantes.add(pedido);
+				}
 			} else {
+				Log.e("encontradoH", true + "");
 				encontradoE = false;
 				for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
 					if (pedido.getIdComanda() == pedidoE.getIdComanda()
 							&& pedido.getProducto().getIdMenu() == pedidoE
 									.getProducto().getIdMenu()) {
-						pedidoE.setUnidades(pedidoE.getUnidades()
-								+ pedido.getUnidades());
 						encontradoE = true;
+						Log.e("pedidoE", true + "");
 						break;
 					}
 				}
-				if (!encontradoE)
+				if (!encontradoE) {
+					Log.e("encontradoE", false + "");
 					pedidosEntrantes.add(pedidoHEncontrado);
+				}
 			}
 		}
 		fragmentHistorico.avisaAdaptador();
@@ -665,11 +678,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				pedidoH.setUnidades(pedidoM.getUnidades());
 				if (pedidoH.getListos() > pedidoH.getUnidades()) {
 					pedidoH.setListos(pedidoH.getUnidades());
-				}	
+				}
 				if (pedidoH.getUnidades() == 0) {
 					fragmentHistorico.dameHistoricos().remove(pedidoH);
 					break;
-				} else if(pedidoH.isServido()){
+				} else if (pedidoH.isServido()) {
 					fragmentHistorico.getHistoricosServidos().add(pedidoH);
 				}
 				fragmentHistorico.avisaAdaptador();
@@ -708,15 +721,14 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		pedidosEntrantes.clear();
 		fragmentHistorico.dameHistoricos().clear();
 		for (PedidosEntrantesCB pedido : pedidoActualizados) {
-			if (pedido.getListos() > 0){
-				if(pedido.isServido())
-					fragmentHistorico.getHistoricosServidos().add(pedido);
-				else
-					fragmentHistorico.dameHistoricos().add(pedido);
-			}
+			if (pedido.isServido())
+				fragmentHistorico.getHistoricosServidos().add(pedido);
+			else
+				fragmentHistorico.dameHistoricos().add(pedido);
 			if (!pedido.isTerminado())
 				pedidosEntrantes.add(pedido);
 		}
+		Log.e("size", fragmentHistorico.dameHistoricos().size() + "");
 		fragmentHistorico.avisaAdaptador();
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
@@ -748,7 +760,6 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-
 
 	private void activarWifi() {
 		WifiManager wifiManager = (WifiManager) this
