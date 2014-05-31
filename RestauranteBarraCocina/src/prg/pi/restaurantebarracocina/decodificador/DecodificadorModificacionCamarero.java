@@ -31,7 +31,10 @@ public class DecodificadorModificacionCamarero {
 			int idComanda = Integer.parseInt(elementoPedido.getAttribute("idCom"));
 			int idMenu = Integer.parseInt(nodePedido.getChildNodes().item(0).getFirstChild().getNodeValue());
 			int listos = Integer.parseInt(nodePedido.getChildNodes().item(1).getFirstChild().getNodeValue());
-			pedidosListos.add(new PedidoModificadoCamarero(idComanda, idMenu, listos));
+			int finalizado = Integer.parseInt(nodePedido.getChildNodes().item(2).getFirstChild().getNodeValue());
+			
+			boolean todosServidos = finalizado == 1 ? true : false;
+			pedidosListos.add(new PedidoModificadoCamarero(idComanda, idMenu, listos, todosServidos));
 		}
 	}
 }

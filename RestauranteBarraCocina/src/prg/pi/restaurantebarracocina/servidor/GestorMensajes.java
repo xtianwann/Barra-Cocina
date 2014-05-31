@@ -38,8 +38,8 @@ import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
 
 /**
- * @author Juan G. PÃ©rez Leo
- * @author Cristian MarÃ­n Honor
+ * @author Juan G. Pérez Leo
+ * @author Cristian Marín Honor
  */
 public class GestorMensajes extends Thread {
 
@@ -54,17 +54,14 @@ public class GestorMensajes extends Thread {
 		try {
 			conn = new Conexion(socket);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		do {
 			try {
 				this.mensaje = conn.leerMensaje();
 			} catch (NullPointerException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} while (this.mensaje.length() == 0);
@@ -84,7 +81,6 @@ public class GestorMensajes extends Thread {
 			String tipo = nodo.item(0).getChildNodes().item(0).getNodeValue();
 			if (tipo.equals("PedidoMesa")) {
 				new Thread(new Runnable() {
-
 					public void run() {
 						principal.runOnUiThread(new Runnable() {
 							@Override
@@ -98,7 +94,6 @@ public class GestorMensajes extends Thread {
 			}
 			if (tipo.equals("ModificacionCamarero")) {
 				new Thread(new Runnable() {
-
 					public void run() {
 						principal.runOnUiThread(new Runnable() {
 							@Override
@@ -112,7 +107,6 @@ public class GestorMensajes extends Thread {
 			}
 			if (tipo.equals("CancelarPedido")) {
 				new Thread(new Runnable() {
-
 					public void run() {
 						principal.runOnUiThread(new Runnable() {
 							@Override
@@ -124,10 +118,8 @@ public class GestorMensajes extends Thread {
 					}
 				}).start();
 			}
-			if (tipo.equals("XMLInfoAcumulada")) {
-				Log.e("infoacumulada","entro");
+			if (tipo.equals("InfoAcumulada")) {
 				new Thread(new Runnable() {
-					
 					public void run() {
 						principal.runOnUiThread(new Runnable() {
 							@Override
@@ -140,7 +132,6 @@ public class GestorMensajes extends Thread {
 				}).start();
 			}
 			if (tipo.equals("TodosServidos")) {
-
 				new Thread(new Runnable() {
 					public void run() {
 						principal.runOnUiThread(new Runnable() {

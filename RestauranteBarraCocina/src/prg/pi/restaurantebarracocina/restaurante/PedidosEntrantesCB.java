@@ -24,6 +24,19 @@ public class PedidosEntrantesCB {
 		this.listos = listos;
 		this.servido = false;
 	}
+	
+	public PedidosEntrantesCB(String nombreSeccion, String nombreMesa, int idComanda, int unidades, Producto producto, int listos, int servidos) {
+		this.nombreSeccion = nombreSeccion;
+		this.nombreMesa = nombreMesa;
+		this.idComanda = idComanda;
+		this.unidades = unidades;
+		this.producto = producto;
+		this.listos = listos;
+		if(servidos == unidades)
+			this.servido = true;
+		else
+			this.servido = false;
+	}
 
 	public String getNombreSeccion() {
 		return nombreSeccion;
@@ -72,9 +85,11 @@ public class PedidosEntrantesCB {
 	public void setUnidades(int unidades) {
 		this.unidades = unidades;
 	}
+	
 	public boolean isTerminado(){
 		return listos >= unidades;
 	}
+	
 	public boolean isServido() {
 		return servido;
 	}

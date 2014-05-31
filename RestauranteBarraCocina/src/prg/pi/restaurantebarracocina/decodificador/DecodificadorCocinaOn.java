@@ -52,14 +52,15 @@ public class DecodificadorCocinaOn {
 				int unidades = Integer.parseInt(atributos.item(6).getFirstChild().getNodeValue());
 				int udPedido = Integer.parseInt(atributos.item(7).getFirstChild().getNodeValue());
 				int listos = Integer.parseInt(atributos.item(8).getFirstChild().getNodeValue());
+				int servidos = Integer.parseInt(atributos.item(9).getFirstChild().getNodeValue());
 				
 				if(listos == 0){
-					pedidosPrincipal.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
+					pedidosPrincipal.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos, servidos));
 				} else if(unidades == listos){
-					pedidosHistorico.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
+					pedidosHistorico.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos, servidos));
 				} else {
-					pedidosPrincipal.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
-					pedidosHistorico.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
+					pedidosPrincipal.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos, servidos));
+					pedidosHistorico.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos, servidos));
 				}
 			}
 		}

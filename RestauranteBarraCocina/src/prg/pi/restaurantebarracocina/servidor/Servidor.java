@@ -17,8 +17,8 @@ import prg.pi.restaurantebarracocina.MainActivity;
 /**
  * Arranca el servidor
  * 
- * @author Juan G. PÃ©rez Leo
- * @author Cristian MarÃ­n Honor
+ * @author Juan G. Pérez Leo
+ * @author Cristian Marín Honor
  */
 public class Servidor extends Service{
     

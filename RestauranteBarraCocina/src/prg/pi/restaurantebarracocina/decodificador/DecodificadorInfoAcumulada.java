@@ -39,7 +39,7 @@ public class DecodificadorInfoAcumulada {
 			int udServido = Integer.parseInt(atributos.item(9).getFirstChild().getNodeValue());
 			
 			// genera aquí el objeto
-			pedidosActualizados.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades,new Producto(idMenu, nombreProducto,nombreCantidad), udListo));
+			pedidosActualizados.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades,new Producto(idMenu, nombreProducto,nombreCantidad), udListo, udServido));
 		}
 	}
 
