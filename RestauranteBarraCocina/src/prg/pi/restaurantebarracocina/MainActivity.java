@@ -594,8 +594,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 							&& pedido.getProducto().getIdMenu() == pedidoE
 									.getProducto().getIdMenu()) {
 						encontradoE = true;
-						pedidoE.setUnidades(pedidoHEncontrado.getUnidades()
-								+ pedidoE.getUnidades());
+						pedidoE.setUnidades(pedidoHEncontrado.getUnidades());
 						Log.e("pedidoE", true + "");
 						break;
 					}
