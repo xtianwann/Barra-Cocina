@@ -47,7 +47,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-
+/**
+ * 
+ * 
+ * Clase encargada de enviar los pedidos listos y de la comunicación con el fragment de pedidos históricos.
+ * 
+ * @author Juan G. Pérez Leo
+ * @author Cristian Marín Honor
+ */
 public class MainActivity extends FragmentActivity implements HistoricoListener {
 	private Servidor servidor;
 	private Button limpiar, cambiar, mas, menos, enviar, deshacer, todo;
@@ -183,8 +190,14 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		return true;
 		/** true -> consumimos el item, no se propaga */
 	}
-
-	class PendientesThread extends Thread {
+	/**
+	 * 
+	 * Clase encargada de pedir al servidor los pedidos pendientes de la cocina/barra
+	 * 
+	 * @author Juan G. Pérez Leo
+	 * @author Cristian Marín Honor
+	 */
+	public class PendientesThread extends Thread {
 		public void run() {
 			runOnUiThread(new Runnable() {
 				@Override
@@ -231,30 +244,44 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			});
 		}
 	}
-
+	/**
+     * Muestra un dialogo.
+     * 
+     */
 	public void mostrarDialogo() {
 		dialog.show();
 	}
-
+	/**
+	 * 
+	 * Clase encargada de mostrar los pedidos enviados por los camareros.
+	 * 
+	 * @author Juan G. Pérez Leo
+	 * @author Cristian Marín Honor
+	 */
 	private class AdaptadorComanda extends BaseAdapter {
 		private LayoutInflater mInflater;
-
+		/**
+		 * Constructor:
+		 * 
+		 * @param context
+		 *            [Context] Contexto en el que se encuentra el adaptador.
+		 */
 		public AdaptadorComanda(Context context) {
 			mInflater = LayoutInflater.from(context);
 		}
-
+		@Override
 		public int getCount() {
 			return pedidosEntrantes.size();
 		}
-
+		@Override
 		public Object getItem(int position) {
 			return position;
 		}
-
+		@Override
 		public long getItemId(int position) {
 			return position;
 		}
-
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			PedidoTexto pedido;
 			if (convertView == null) {
@@ -271,7 +298,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		}
 
 	}
-
+	/**
+	 * 
+	 * Encargado de iniciar el listener de la lista de pedidos,su adaptador y todos los listener de los botones de la
+	 * interfaz.
+	 * 
+	 */
 	private void prepararListeners() {
 		pedidosEntrantes = new ArrayList<PedidosEntrantesCB>();
 		lista = (ListView) findViewById(R.id.lista);
@@ -321,12 +353,16 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			}
 		});
 	}
-
+	/**
+	 * 
+	 * Encargado de iniciar los listeners de los botones de la calculadora.
+	 * 
+	 */
 	private void iniciarCalculadora() {
 		calculadora = new Calculadora(
 				new int[] { R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4,
 						R.id.c5, R.id.c6, R.id.c7, R.id.c8, R.id.c9 }, R.id.ce,
-				R.id.total);
+				R.id.total,this.findViewById(R.id.drawer_layout));
 		cambiar = (Button) findViewById(R.id.cambiar);
 		cambiar.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
@@ -399,7 +435,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 
 		});
 	}
-
+	/**
+	 * 
+	 * Añade los pedidos a la lista de pedidos a enviar.
+	 * 
+	 */
 	public void addListo() {
 		if (!isListo(seleccionado)) {
 			listos.add(pedidosEntrantes.get(seleccionado));
@@ -409,7 +449,13 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			}
 		}
 	}
-
+	/**
+	 * 
+	 * Comprueba si un pedido ya esta en la lista de pedidos a enviar.
+	 *
+	 * @param pedido [int] Posicion del pedido en la lista.
+	 * @return [boolean] true is esta ya en la lista a enviar, false en caso contrario.
+	 */
 	public boolean isListo(int pedido) {
 		boolean listo = false;
 		for (PedidosEntrantesCB pedidoListo : listos) {
@@ -420,7 +466,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		}
 		return listo;
 	}
-
+	/**
+	 * 
+	 * Añade los pedidos enviados a la lista de pedidos históricos. En caso de que se hayan preparado todos los productos de un pedido, se elimina de la lista de pedidos entrantes.
+	 * 
+	 */
 	public void terminarPedido() {
 		fragmentHistorico.addPedidosHistoricos(listos
 				.toArray(new PedidosEntrantesCB[0]));
@@ -431,7 +481,13 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		}
 		adaptador.notifyDataSetChanged();
 	}
-
+	/**
+	 * 
+	 * Comprueba si se han preparado todos los productos de un pedido.
+	 * 
+	 * @return [boolean] true si se han preparado todos los productos, en caso contrario false.
+	 * 
+	 */
 	public boolean existenTerminados() {
 		boolean terminado = false;
 		for (PedidosEntrantesCB pedidoListo : listos) {
@@ -442,7 +498,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		}
 		return terminado;
 	}
-
+	/**
+	 * 
+	 * Comunica a los camareros lo pedidos que estan listos para servir.
+	 * 
+	 * 	 
+	 */
 	public void enviarComanda() {
 		new Thread(new Runnable() {
 			public void run() {
@@ -465,8 +526,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			}
 		}).start();
 	}
-
-	// Me lo tengo que mirar
+	/**
+	 * 
+	 * Añade pedidos enviados por los camareros a la lista de pedidos entrantes.
+	 * 
+	 */
 	public void addPedidos(PedidosEntrantesCB[] pedidosE) {
 		boolean encontradoH;
 		boolean encontradoE;
@@ -530,6 +594,8 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 							&& pedido.getProducto().getIdMenu() == pedidoE
 									.getProducto().getIdMenu()) {
 						encontradoE = true;
+						pedidoE.setUnidades(pedidoHEncontrado.getUnidades()
+								+ pedidoE.getUnidades());
 						Log.e("pedidoE", true + "");
 						break;
 					}
@@ -544,58 +610,30 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-
-	public class Calculadora {
-		Button cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve,
-				ce;
-		public Button botones[] = { cero, uno, dos, tres, cuatro, cinco, seis,
-				siete, ocho, nueve };
-		public TextView total;
-
-		public Calculadora(int botonesR[], int ceR, int totalR) {
-			for (int contador = 0; contador < botones.length; contador++) {
-				botones[contador] = (Button) findViewById(botonesR[contador]);
-				botones[contador]
-						.setOnClickListener(new AdapterView.OnClickListener() {
-							public void onClick(View view) {
-								if (total.getText().length() < 3) {
-									Button botonPulsado = (Button) view;
-									int sumando = Integer.parseInt(botonPulsado
-											.getText() + "");
-									sumar(sumando);
-								}
-							}
-						});
-			}
-			ce = (Button) findViewById(ceR);
-			ce.setOnClickListener(new AdapterView.OnClickListener() {
-				public void onClick(View view) {
-					total.setText(0 + "");
-				}
-			});
-			total = (TextView) findViewById(totalR);
-		}
-
-		public void sumar(int sumando) {
-			String totalSuma = total.getText() + "";
-			int suma = Integer.parseInt(totalSuma);
-			if (suma == 0) {
-				totalSuma = sumando + "";
-			} else {
-				totalSuma = suma + "" + sumando + "";
-			}
-			total.setText(totalSuma);
-		}
-	}
-
+	/**
+	 * 
+	 * 
+	 * Clase encargada las notificaciones mostradas en la aplicación.
+	 * 
+	 * @author Juan G. Pérez Leo
+	 * @author Cristian Marín Honor
+	 */
 	private class NotificacionBarra {
 		private AlertDialog.Builder dialog;
 		private MainActivity mainActivity;
-
+		/**
+		 * Constructor:
+		 * 
+		 * @param mainActivity
+		 *            [MainActivity] Clase en la que mostrar las notificaciones.
+		 */
 		public NotificacionBarra(MainActivity mainActivity) {
 			this.mainActivity = mainActivity;
 		}
-
+		/**
+		 * Lanza una notificación cuando se intenta enviar pedidos sin modificar.
+		 * 
+		 */
 		private void lanzarNotificacionSinModificar() {
 			dialog = new AlertDialog.Builder(mainActivity);
 			dialog.setMessage("No se ha modificado ningun pedido.");
@@ -610,23 +648,34 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			dialog.show();
 		}
 	}
-
+	/**
+	 * 
+	 * 
+	 * Clase encargada de almacenar los datos y colores en los textos de la lista pedidos entrantes.
+	 * 
+	 * @author Juan G. Pérez Leo
+	 * @author Cristian Marín Honor
+	 */
 	public class PedidoTexto {
 		TextView cantidadTexto;
 		TextView productoTexto;
 		TextView estadoTexto;
 		PedidosEntrantesCB pedidoEntrante;
-
-		public PedidoTexto(PedidosEntrantesCB pedidoEntrante) {
-			this.pedidoEntrante = pedidoEntrante;
-		}
-
+		/**
+	     * Constructor:
+	     * 
+	     * @param view [View] Vista a modificar.
+	     */
 		public PedidoTexto(View convertView) {
 			cantidadTexto = (TextView) convertView.findViewById(R.id.unidad);
 			productoTexto = (TextView) convertView.findViewById(R.id.producto);
 			estadoTexto = (TextView) convertView.findViewById(R.id.estado);
 		}
-
+		/**
+	     * Añade el contenido de los textos de la lista de pedidos entrantes.
+	     * 
+	     * @param pedidoEntrante [PedidosEntrantesCB] Pedido entrante.
+	     */
 		public void addPedido(PedidosEntrantesCB pedidoEntrante) {
 			cantidadTexto.setText(pedidoEntrante.getUnidades() + "");
 			productoTexto.setText(pedidoEntrante.getProducto()
@@ -635,7 +684,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 					+ pedidoEntrante.getProducto().getNombreProducto());
 			estadoTexto.setText(pedidoEntrante.getListos() + "");
 		}
-
+		/**
+	     * Modifica el color de todos los textos de la lista de comandas pendientes
+	     * 
+	     * @param posicion [int] Posicion del pedido entrante en la lista.
+	     */
 		private void cambiarColor(int posicion) {
 			if (seleccionado == posicion) {
 				cantidadTexto.setBackgroundColor(Color.parseColor("#F6A421"));
@@ -669,8 +722,20 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				}
 			}
 		}
+		/**
+		 * Permite modificar los pedidos entrantes
+		 * 
+		 * @param pedidoEntrante [PedidosEntrantesCB] Pedido entrante a modificar.
+		 */
+		public PedidoTexto(PedidosEntrantesCB pedidoEntrante) {
+			this.pedidoEntrante = pedidoEntrante;
+		}
 	}
-
+	/**
+	 * Modifica las unidades de los pedidos enviados por el camarero.
+	 * 
+	 * @param pedidoM [PedidoModificadoCamarero] Pedido a modificar.
+	 */
 	public void modificarUnidades(PedidoModificadoCamarero pedidoM) {
 		for (PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()) {
 			if (pedidoM.getIdComanda() == pedidoH.getIdComanda()
@@ -701,7 +766,11 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-
+	/**
+	 * Modifica las unidades de los pedidos servidos devueltos por el camarero.
+	 * 
+	 * @param pedidoM [PedidoModificadoCamarero] Pedido a modificar.
+	 */
 	public void cancelarPedidos(PedidoModificadoCamarero pedidoM) {
 		for (PedidosEntrantesCB pedidoH : fragmentHistorico.dameHistoricos()) {
 			if (pedidoM.getIdComanda() == pedidoH.getIdComanda()
@@ -711,20 +780,35 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				pedidoH.setListos(pedidoH.getListos() - pedidoM.getUnidades());
 			}
 		}
+		fragmentHistorico.avisaAdaptador();
+		for (PedidosEntrantesCB pedidoE : pedidosEntrantes) {
+			if (pedidoM.getIdComanda() == pedidoE.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoE.getProducto().getIdMenu()) {
+				pedidoE.setUnidades(pedidoE.getUnidades()
+						- pedidoM.getUnidades());
+				pedidoE.setListos(pedidoE.getListos() - pedidoM.getUnidades());
+			}
+		}
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
-		fragmentHistorico.avisaAdaptador();
 	}
-
+	/**
+	 * Actualiza los pedidos pendientes de la cocina/barra cuando se enciende o pierde la conexión.
+	 * 
+	 * @param pedidoActualizados [ArrayList<PedidosEntrantesCB>] Lista de pedidos para actualizar.
+	 */
 	public void actualizarPedidos(
 			ArrayList<PedidosEntrantesCB> pedidoActualizados) {
 		pedidosEntrantes.clear();
 		fragmentHistorico.dameHistoricos().clear();
 		for (PedidosEntrantesCB pedido : pedidoActualizados) {
-			if (pedido.isServido())
+			if (pedido.isServido()){
 				fragmentHistorico.getHistoricosServidos().add(pedido);
-			else
-				fragmentHistorico.dameHistoricos().add(pedido);
+			}
+			else{
+				if(pedido.getListos() > 0 )
+					fragmentHistorico.dameHistoricos().add(pedido);
+			}
 			if (!pedido.isTerminado())
 				pedidosEntrantes.add(pedido);
 		}
@@ -760,13 +844,21 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		lista.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
-
+	/**
+	 * Activa la conexión wifi del dispositivo.
+	 * 
+	 **/
 	private void activarWifi() {
 		WifiManager wifiManager = (WifiManager) this
 				.getSystemService(Context.WIFI_SERVICE);
 		wifiManager.setWifiEnabled(true);
 	}
-
+	/**
+	 * Borra los pedidos servidos de la lista de pedidos históricos.
+	 * 
+	 * @param finalizados [PedidoFinalizado[]] Lista de pedidos servidos.
+	 * 
+	 **/
 	public void todosServidos(PedidoFinalizado[] finalizados) {
 		ArrayList<PedidosEntrantesCB> pedidosBorrar = new ArrayList<PedidosEntrantesCB>();
 		boolean encontrado = false;
@@ -789,18 +881,27 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			fragmentHistorico.avisaAdaptador();
 		}
 	}
-
+	/**
+	 * Obtiene la ip del servidor de las preferencias.
+	 * 
+	 * @return [String] Ip del servidor.
+	 **/
 	public static String getIpServidor() {
 		return preferencias.getString("ipServidor", null) + "";
 	}
-
+	/**
+	 * Comprueba si el dispositivo capta señal wifi.
+	 * 
+	 * @return [boolean] true si hay señal wifi,false en caso contrario.
+	 * 
+	 **/
 	public boolean comprobarSenalWifi(android.net.NetworkInfo wifi) {
 		boolean resultado = false;
 		if (wifi.getDetailedState() == DetailedState.CONNECTED)
 			resultado = true;
 		return resultado;
 	}
-
+	//Pendiente de que lo escriba Juan
 	public class LogoutAsincrono extends AsyncTask<Void, Void, Boolean> {
 
 		protected void onPreExecute() {
@@ -847,7 +948,12 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 			pDialog.cancel();
 		}
 	}
-
+	/**
+	 * Borra los pedidos de la comanda cerrada/cobrada de todas las listas
+	 * 
+	 * @param idCom [int] Id de la comanda a borrar.
+	 * 
+	 **/
 	public void finalizarComanda(int idCom) {
 		ArrayList <PedidosEntrantesCB> pedidosBorrar = new ArrayList<PedidosEntrantesCB>();
 		
