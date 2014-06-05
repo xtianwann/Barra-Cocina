@@ -11,22 +11,38 @@ import android.util.Log;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
-
+/**
+ * Clase encargada de decodificar el mensaje PedidoMesaServer del servidor.
+ * 
+ * @author Juan Gabriel Pérez Leo
+ * @author Cristian Marín Honor
+ */
 public class DecodificadorPedidosEntrantesCB {
 	
 	private Document dom;
 	private ArrayList<PedidosEntrantesCB> pedidosEntrantes;
-	
+	/**
+	 * Constructor:
+	 * 
+	 * @param dom [Document] DOM del XMl a interpretar.
+	 */
 	public DecodificadorPedidosEntrantesCB(Document dom) {
 		this.dom = dom;
 		pedidosEntrantes = new ArrayList<PedidosEntrantesCB>();
 		generarPedidos();
 	}
-	
+	/**
+	 * Devuelve los pedidos entrantes recibidos del servidor.
+	 * 
+	 * @return [PedidosEntrantesCB[]] Pedidos entrantes del servidor.
+	 */
 	public PedidosEntrantesCB[] getPedidosEntrantes(){
 		return pedidosEntrantes.toArray(new PedidosEntrantesCB[0]);
 	}
-	
+	/**
+	 * Interpreta la respuesta recibida por el servidor y genera los pedidos entrantes.
+	 * 
+	 */
 	private void generarPedidos(){
 		Node nodeMesa = dom.getElementsByTagName("mesa").item(0);
 		Element elementoMesa = (Element) nodeMesa;

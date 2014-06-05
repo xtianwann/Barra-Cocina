@@ -7,22 +7,38 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
-
+/**
+ * Clase encargada de decodificar el mensaje InfoAcumulada del servidor.
+ * 
+ * @author Juan Gabriel Pérez Leo
+ * @author Cristian Marín Honor
+ */
 public class DecodificadorInfoAcumulada {
 	
 	private Document dom;
 	private ArrayList<PedidosEntrantesCB> pedidosActualizados;
-	
+	/**
+	 * Constructor:
+	 * 
+	 * @param dom [Document] DOM del XMl a interpretar.
+	 */
 	public DecodificadorInfoAcumulada(Document dom){
 		this.dom = dom;
 		pedidosActualizados = new ArrayList<PedidosEntrantesCB>();
 		extraerInfo();
 	}
-	
+	/**
+	 * Devuelve los pedidos pendientes recibidos del servidor.
+	 * 
+	 * @return [ArrayList<PedidosEntrantesCB>] Pedidos pendientes del servidor.
+	 */
 	public ArrayList<PedidosEntrantesCB> getInfoActualizada(){
 		return pedidosActualizados;
 	}
-	
+	/**
+	 * Interpreta la respuesta recibida por el servidor y genera los pedidos pendientes.
+	 * 
+	 */
 	private void extraerInfo(){
 		NodeList listaPedidos = dom.getElementsByTagName("pedido");
 		for(int pedido = 0; pedido < listaPedidos.getLength(); pedido++){

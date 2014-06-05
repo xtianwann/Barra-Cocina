@@ -9,7 +9,12 @@ import org.w3c.dom.NodeList;
 import android.util.Log;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
-
+/**
+ * Clase encargada de decodificar el mensaje CocinaOn del servidor.
+ * 
+ * @author Juan Gabriel Pérez Leo
+ * @author Cristian Marín Honor
+ */
 public class DecodificadorCocinaOn {
 	
 	private Document dom;
@@ -17,7 +22,11 @@ public class DecodificadorCocinaOn {
 	
 	private ArrayList<PedidosEntrantesCB> pedidosHistorico;
 	private ArrayList<PedidosEntrantesCB> pedidosPrincipal;
-	
+	/**
+	 * Constructor:
+	 * 
+	 * @param dom [Document] DOM del XMl a interpretar.
+	 */
 	public DecodificadorCocinaOn(Document dom){
 		this.dom = dom;
 		pedidosHistorico = new ArrayList<PedidosEntrantesCB>();
@@ -25,15 +34,26 @@ public class DecodificadorCocinaOn {
 		
 		interpretarRespuesta();
 	}
-	
+	/**
+	 * Devuelve los pedidos entrantes recibidos por del servidor.
+	 * 
+	 * @return [ArrayList<PedidosEntrantesCB>] Pedidos entrantes del servidor.
+	 */
 	public ArrayList<PedidosEntrantesCB> getPedidosPrincipal(){
 		return pedidosPrincipal;
 	}
-	
+	/**
+	 * Devuelve los pedidos históricos recibidos por del servidor.
+	 * 
+	 * @return [ArrayList<PedidosEntrantesCB>] Pedidos históricos del servidor.
+	 */
 	public ArrayList<PedidosEntrantesCB> getPedidosHistorico(){
 		return pedidosHistorico;
 	}
-	
+	/**
+	 * Interpreta la respuesta recibida por el servidor y genera los pedidos pendientes.
+	 * 
+	 */
 	private void interpretarRespuesta(){
 		respuesta = dom.getElementsByTagName("respuesta").item(0).getFirstChild().getNodeValue();
 		Log.e("respuesta", respuesta);

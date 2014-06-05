@@ -9,22 +9,38 @@ import org.w3c.dom.NodeList;
 import android.util.Log;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidoFinalizado;
-
+/**
+ * Clase encargada de decodificar el mensaje PedidosServidos del servidor.
+ * 
+ * @author Juan Gabriel Pérez Leo
+ * @author Cristian Marín Honor
+ */
 public class DecodificadorPedidosServidos {
 	
 	private Document dom;
 	private ArrayList<PedidoFinalizado> pedidosFinalizados;
-	
+	/**
+	 * Constructor:
+	 * 
+	 * @param dom [Document] DOM del XMl a interpretar.
+	 */
 	public DecodificadorPedidosServidos(Document dom){
 		this.dom = dom;
 		pedidosFinalizados = new ArrayList<PedidoFinalizado>();
 		extraerServidos();
 	}
-	
+	/**
+	 * Devuelve el pedidos finalizados recibido del servidor.
+	 * 
+	 * @return [PedidoFinalizado[]] Pedidos finalizados del servidor.
+	 */
 	public PedidoFinalizado[] getFinalizados(){
 		return pedidosFinalizados.toArray(new PedidoFinalizado[0]);
 	}
-	
+	/**
+	 * Interpreta la respuesta recibida por el servidor y genera los pedidos finalizados.
+	 * 
+	 */
 	private void extraerServidos(){
 		NodeList nlServidos = dom.getElementsByTagName("pedido");
 		for(int contadorServidos = 0; contadorServidos < nlServidos.getLength(); contadorServidos++){

@@ -97,9 +97,7 @@ public class Cliente {
 	 * @throws IOExceptionb,ConnectException
 	 */
 	private void conexion() throws IOException, NullPointerException {
-		//conn = new Conexion("192.168.1.9", 27000); // juan
-		//conn = new Conexion("192.168.20.3", 27000); // cristian
-		conn = new Conexion(ipServidor, 27000); // portatil
+		conn = new Conexion(ipServidor, 27000);
 	}
 	
 	public DecodificadorCocinaOn getDecoCocinaOn(){
