@@ -6,8 +6,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * 
- * 
  * Clase en la que se recogen los botones de la calculadora.
  * 
  * @author Juan G. Pérez Leo
@@ -15,15 +13,15 @@ import android.widget.TextView;
  */
 
 public class Calculadora {
-	Button cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve,
-			ce;
-	public Button botones[] = { cero, uno, dos, tres, cuatro, cinco, seis,
-			siete, ocho, nueve };
+	
+	Button cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, ce;
+	public Button botones[] = { cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve };
 	public TextView total;
+	
 	/**
      * Constructor:
      * 
-     * @param botonesR [int[]] Referencia a los botones de los números de la calculadora.
+     * @param botonesR [int[ ]] Referencia a los botones de los números de la calculadora.
      * @param ceR [int] Referencia al botón CE de la calculadora.
      * @param totalR [int] Referencia a la pantalla de la calculadora.
      */
@@ -51,12 +49,12 @@ public class Calculadora {
 		});
 		total = (TextView) view.findViewById(totalR);
 	}
+	
 	/**
      * Muestra los números pulsados de la calculadora
      * 
      * @param sumando [int] Numero pulsado.
      */
-
 	public void sumar(int sumando) {
 		String totalSuma = total.getText() + "";
 		int suma = Integer.parseInt(totalSuma);

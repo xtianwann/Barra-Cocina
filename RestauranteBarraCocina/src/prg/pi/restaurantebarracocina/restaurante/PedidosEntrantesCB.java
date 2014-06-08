@@ -1,7 +1,7 @@
 
 package prg.pi.restaurantebarracocina.restaurante;
+
 /**
- * 
  * Clase que contiene toda la información sobre pedidos entrantes.
  * 
  * @author Juan G. Pérez Leo
@@ -16,8 +16,8 @@ public class PedidosEntrantesCB {
 	private Producto producto;
 	private int listos;
 	private boolean servido;
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param nombreSeccion [String] Nombre de la sección asociada al pedido.
@@ -36,8 +36,8 @@ public class PedidosEntrantesCB {
 		this.listos = listos;
 		this.servido = false;
 	}
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param nombreSeccion [String] Nombre de la sección asociada al pedido.
@@ -60,6 +60,7 @@ public class PedidosEntrantesCB {
 		else
 			this.servido = false;
 	}
+	
 	/**
      * Permite obtener el nombre de la sección.
      * 
@@ -68,6 +69,7 @@ public class PedidosEntrantesCB {
 	public String getNombreSeccion() {
 		return nombreSeccion;
 	}
+	
 	/**
      * Permite modificar el nombre de la sección.
      * 
@@ -76,6 +78,7 @@ public class PedidosEntrantesCB {
 	public void setNombreSeccion(String nombreSeccion) {
 		this.nombreSeccion = nombreSeccion;
 	}
+	
 	/**
      * Permite obtener el nombre de la mesa.
      * 
@@ -84,6 +87,7 @@ public class PedidosEntrantesCB {
 	public String getNombreMesa() {
 		return nombreMesa;
 	}
+	
 	/**
      * Permite modificar el nombre de la mesa.
      * 
@@ -92,6 +96,7 @@ public class PedidosEntrantesCB {
 	public void setNombreMesa(String nombreMesa) {
 		this.nombreMesa = nombreMesa;
 	}
+	
 	/**
      * Permite obtener el id de la comanda.
      * 
@@ -100,6 +105,7 @@ public class PedidosEntrantesCB {
 	public int getIdComanda() {
 		return idComanda;
 	}
+	
 	/**
      * Permite modificar el id de la comanda.
      * 
@@ -108,6 +114,7 @@ public class PedidosEntrantesCB {
 	public void setIdComanda(int idComanda) {
 		this.idComanda = idComanda;
 	}
+	
 	/**
      * Permite obtener el producto del pedido.
      * 
@@ -116,6 +123,7 @@ public class PedidosEntrantesCB {
 	public Producto getProducto() {
 		return producto;
 	}
+	
 	/**
      * Permite modificar el producto.
      * 
@@ -124,6 +132,7 @@ public class PedidosEntrantesCB {
 	public void setProducto(Producto producto) {
 		this.producto = producto;
 	}
+	
 	/**
      * Permite obtener la cantidad de pedidos listos.
      * 
@@ -132,6 +141,7 @@ public class PedidosEntrantesCB {
 	public int getListos() {
 		return listos;
 	}
+	
 	/**
      * Permite modificar la cantidad de pedidos listos.
      * 
@@ -140,6 +150,7 @@ public class PedidosEntrantesCB {
 	public void setListos(int listos) {
 		this.listos = listos;
 	}
+	
 	/**
      * Permite obtener la cantidad de pedidos.
      * 
@@ -148,6 +159,7 @@ public class PedidosEntrantesCB {
 	public int getUnidades() {
 		return unidades;
 	}
+	
 	/**
      * Permite modificar la cantidad de pedidos.
      * 
@@ -156,6 +168,7 @@ public class PedidosEntrantesCB {
 	public void setUnidades(int unidades) {
 		this.unidades = unidades;
 	}
+	
 	/**
      * Devuelve si hay mas pedidos listos que unidades
      * 
@@ -164,6 +177,7 @@ public class PedidosEntrantesCB {
 	public boolean isTerminado(){
 		return listos >= unidades;
 	}
+	
 	/**
      * Devuelve si el pedido esta totalmente servido.
      * 
@@ -172,6 +186,7 @@ public class PedidosEntrantesCB {
 	public boolean isServido() {
 		return servido;
 	}
+	
 	/**
      * Permite modificar el estado del pedido servido.
      * 

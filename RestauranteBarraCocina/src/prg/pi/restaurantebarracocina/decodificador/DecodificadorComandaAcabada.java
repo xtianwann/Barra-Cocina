@@ -1,6 +1,7 @@
 package prg.pi.restaurantebarracocina.decodificador;
 
 import org.w3c.dom.Document;
+
 /**
  * Clase encargada de decodificar el mensaje ComandaAcabada del servidor.
  * 
@@ -11,6 +12,7 @@ public class DecodificadorComandaAcabada {
 	
 	private Document dom;
 	private int idComanda;
+	
 	/**
 	 * Constructor:
 	 * 
@@ -20,6 +22,7 @@ public class DecodificadorComandaAcabada {
 		this.dom = dom;
 		obtenerDatos();
 	}
+	
 	/**
 	 * Devuelve el id de la comanda recibida por del servidor.
 	 * 
@@ -28,9 +31,9 @@ public class DecodificadorComandaAcabada {
 	public int getIdcomandaCerrada(){
 		return idComanda;
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera los el id de la comanda.
-	 * 
 	 */
 	private void obtenerDatos(){
 		idComanda = Integer.parseInt(dom.getElementsByTagName("idComanda").item(0).getFirstChild().getNodeValue());

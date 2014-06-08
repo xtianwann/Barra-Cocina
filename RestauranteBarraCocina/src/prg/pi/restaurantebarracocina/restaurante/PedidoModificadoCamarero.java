@@ -1,6 +1,6 @@
 package prg.pi.restaurantebarracocina.restaurante;
+
 /**
- * 
  * Clase que contiene toda la información sobre pedidos modificados por el camarero.
  * 
  * @author Juan G. Pérez Leo
@@ -12,8 +12,8 @@ public class PedidoModificadoCamarero {
 	private int idMenu;
 	private int unidades;
 	private boolean todosServidos; 
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param idComanda [int] Id de la comanda del pedido que se ha modificado.
@@ -26,8 +26,8 @@ public class PedidoModificadoCamarero {
 		this.unidades = unidades;
 		this.todosServidos = false;
 	}
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param idComanda [int] Id de la comanda del pedido que se ha modificado.
@@ -41,6 +41,7 @@ public class PedidoModificadoCamarero {
 		this.unidades = unidades;
 		this.todosServidos = todosServidos;
 	}
+	
 	/**
      * Permite obtener el id de la comanda.
      * 
@@ -49,6 +50,7 @@ public class PedidoModificadoCamarero {
 	public int getIdComanda() {
 		return idComanda;
 	}
+	
 	/**
      * Permite modificar el id de la comanda del pedido.
      * 
@@ -57,6 +59,7 @@ public class PedidoModificadoCamarero {
 	public void setIdComanda(int idComanda) {
 		this.idComanda = idComanda;
 	}
+	
 	/**
      * Permite obtener el id del menu.
      * 
@@ -65,6 +68,7 @@ public class PedidoModificadoCamarero {
 	public int getIdMenu() {
 		return idMenu;
 	}
+	
 	/**
      * Permite modificar el id del menu del pedido.
      * 
@@ -73,6 +77,7 @@ public class PedidoModificadoCamarero {
 	public void setIdMenu(int idMenu) {
 		this.idMenu = idMenu;
 	}
+	
 	/**
      * Permite obtener las unidades del pedido.
      * 
@@ -81,6 +86,7 @@ public class PedidoModificadoCamarero {
 	public int getUnidades() {
 		return unidades;
 	}
+	
 	/**
      * Permite modificar las unidades del pedido.
      * 
@@ -89,6 +95,7 @@ public class PedidoModificadoCamarero {
 	public void setUnidades(int unidades) {
 		this.unidades = unidades;
 	}
+	
 	/**
      * Permite obtener si el pedido esta totalmente servido.
      * 
@@ -97,6 +104,7 @@ public class PedidoModificadoCamarero {
 	public boolean isTodosServidos() {
 		return todosServidos;
 	}
+	
 	/**
      * Permite modificar el pedido totalmente servido.
      * 

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
+
 /**
  * Clase encargada de decodificar el mensaje PedidoMesaServer del servidor.
  * 
@@ -21,16 +22,18 @@ public class DecodificadorPedidosEntrantesCB {
 	
 	private Document dom;
 	private ArrayList<PedidosEntrantesCB> pedidosEntrantes;
+	
 	/**
 	 * Constructor:
 	 * 
-	 * @param dom [Document] DOM del XMl a interpretar.
+	 * @param dom [Document] DOM del XML a interpretar.
 	 */
 	public DecodificadorPedidosEntrantesCB(Document dom) {
 		this.dom = dom;
 		pedidosEntrantes = new ArrayList<PedidosEntrantesCB>();
 		generarPedidos();
 	}
+	
 	/**
 	 * Devuelve los pedidos entrantes recibidos del servidor.
 	 * 
@@ -39,9 +42,9 @@ public class DecodificadorPedidosEntrantesCB {
 	public PedidosEntrantesCB[] getPedidosEntrantes(){
 		return pedidosEntrantes.toArray(new PedidosEntrantesCB[0]);
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera los pedidos entrantes.
-	 * 
 	 */
 	private void generarPedidos(){
 		Node nodeMesa = dom.getElementsByTagName("mesa").item(0);
@@ -65,7 +68,7 @@ public class DecodificadorPedidosEntrantesCB {
 			int unidades = Integer.parseInt(nodePedido.getChildNodes().item(2).getFirstChild().getNodeValue());
 			int listos = Integer.parseInt(nodePedido.getChildNodes().item(3).getFirstChild().getNodeValue());
 			
-			pedidosEntrantes.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda,unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
+			pedidosEntrantes.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades, new Producto(idMenu, nombreProducto, nombreCantidad), listos));
 		}
 	}
 

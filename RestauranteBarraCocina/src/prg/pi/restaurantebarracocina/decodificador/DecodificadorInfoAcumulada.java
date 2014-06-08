@@ -3,10 +3,10 @@ package prg.pi.restaurantebarracocina.decodificador;
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
+
 /**
  * Clase encargada de decodificar el mensaje InfoAcumulada del servidor.
  * 
@@ -17,16 +17,18 @@ public class DecodificadorInfoAcumulada {
 	
 	private Document dom;
 	private ArrayList<PedidosEntrantesCB> pedidosActualizados;
+	
 	/**
 	 * Constructor:
 	 * 
-	 * @param dom [Document] DOM del XMl a interpretar.
+	 * @param dom [Document] DOM del XML a interpretar.
 	 */
 	public DecodificadorInfoAcumulada(Document dom){
 		this.dom = dom;
 		pedidosActualizados = new ArrayList<PedidosEntrantesCB>();
 		extraerInfo();
 	}
+	
 	/**
 	 * Devuelve los pedidos pendientes recibidos del servidor.
 	 * 
@@ -35,9 +37,9 @@ public class DecodificadorInfoAcumulada {
 	public ArrayList<PedidosEntrantesCB> getInfoActualizada(){
 		return pedidosActualizados;
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera los pedidos pendientes.
-	 * 
 	 */
 	private void extraerInfo(){
 		NodeList listaPedidos = dom.getElementsByTagName("pedido");
@@ -54,7 +56,7 @@ public class DecodificadorInfoAcumulada {
 			int udListo = Integer.parseInt(atributos.item(8).getFirstChild().getNodeValue());
 			int udServido = Integer.parseInt(atributos.item(9).getFirstChild().getNodeValue());
 			
-			// genera aquí el objeto
+			/* Genera aquí el objeto */
 			pedidosActualizados.add(new PedidosEntrantesCB(nombreSeccion, nombreMesa, idComanda, unidades,new Producto(idMenu, nombreProducto,nombreCantidad), udListo, udServido));
 		}
 	}

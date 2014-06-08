@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import android.util.Log;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.restaurante.Producto;
+
 /**
  * Clase encargada de decodificar el mensaje CocinaOn del servidor.
  * 
@@ -22,6 +23,7 @@ public class DecodificadorCocinaOn {
 	
 	private ArrayList<PedidosEntrantesCB> pedidosHistorico;
 	private ArrayList<PedidosEntrantesCB> pedidosPrincipal;
+	
 	/**
 	 * Constructor:
 	 * 
@@ -34,6 +36,7 @@ public class DecodificadorCocinaOn {
 		
 		interpretarRespuesta();
 	}
+	
 	/**
 	 * Devuelve los pedidos entrantes recibidos por del servidor.
 	 * 
@@ -42,6 +45,7 @@ public class DecodificadorCocinaOn {
 	public ArrayList<PedidosEntrantesCB> getPedidosPrincipal(){
 		return pedidosPrincipal;
 	}
+	
 	/**
 	 * Devuelve los pedidos históricos recibidos por del servidor.
 	 * 
@@ -50,9 +54,9 @@ public class DecodificadorCocinaOn {
 	public ArrayList<PedidosEntrantesCB> getPedidosHistorico(){
 		return pedidosHistorico;
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera los pedidos pendientes.
-	 * 
 	 */
 	private void interpretarRespuesta(){
 		respuesta = dom.getElementsByTagName("respuesta").item(0).getFirstChild().getNodeValue();

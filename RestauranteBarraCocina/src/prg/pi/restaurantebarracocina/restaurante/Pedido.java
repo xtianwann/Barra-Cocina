@@ -1,6 +1,6 @@
 package prg.pi.restaurantebarracocina.restaurante;
+
 /**
- * 
  * Clase que contiene toda la información sobre pedidos.
  * 
  * @author Juan G. Pérez Leo
@@ -9,8 +9,8 @@ package prg.pi.restaurantebarracocina.restaurante;
 public class Pedido {
 	private Producto producto;
 	private int unidades;
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param producto [Producto] Producto a añadir al pedido.
@@ -21,6 +21,7 @@ public class Pedido {
 		this.producto = producto;
 		this.unidades = unidades;
 	}
+	
 	/**
      * Permite obtener el producto del pedido.
      * 
@@ -29,6 +30,7 @@ public class Pedido {
 	public Producto getProducto() {
 		return producto;
 	}
+	
 	/**
      * Permite modificar el producto del pedido.
      * 
@@ -37,6 +39,7 @@ public class Pedido {
 	public void setProducto(Producto producto) {
 		this.producto = producto;
 	}
+	
 	/**
      * Permite obtener las unidades del pedido.
      * 
@@ -45,6 +48,7 @@ public class Pedido {
 	public int getUnidades() {
 		return unidades;
 	}
+	
 	/**
      * Permite modificar las unidades del pedido.
      * 

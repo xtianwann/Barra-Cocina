@@ -25,6 +25,11 @@ public class Servidor extends Service{
     private HiloPrincipal hiloPrincipal;
     private MainActivity principal;
     
+    /**
+     * Constructor: lanza el hilo principal y guarda una instancia de la actividad principal
+     * 
+     * @param principal [MainActivity] instancia de la actividad principal
+     */
     public Servidor(MainActivity principal){
     	this.principal = principal;
         try {
@@ -35,7 +40,21 @@ public class Servidor extends Service{
         }
     }
     
-    /* Hilo principal del servidor */
+    /**
+     * Obtiene la instancia de hilo principal
+     * 
+     * @return [HiloPrincipal] instancia del hilo principal
+     */
+    public HiloPrincipal getHiloPrincipal(){
+    	return hiloPrincipal;
+    }
+    
+    /**
+	 *  Hilo principal del servidor
+	 *  
+	 *  @author Juan G. Pérez Leo
+	 *  @author Cristian Marín Honor
+	 */
     public class HiloPrincipal extends Thread{
         
         private ServerSocket socketServidor;
@@ -45,9 +64,9 @@ public class Servidor extends Service{
         /**
          * Constructor de HiloPrincipal
          * 
-         * @param puerto puerto de escucha
-         * @throws IOException en caso de no poder crear el ServerSocket en
-         * el puerto pasado por parÃ¡metro
+         * @param puerto [int] puerto de escucha
+         * @throws IOException excepción lanzada en caso de no poder crear el ServerSocket en
+         * el puerto pasado por parámetro
          */
         public HiloPrincipal(int puerto) throws IOException{
             this.socketServidor = new ServerSocket(puerto);
@@ -70,7 +89,9 @@ public class Servidor extends Service{
             }
         }
         
-        /* Para la ejecuciÃ³n del hilo */
+        /**
+         * Para la ejecución del hilo
+         */
         public void parar(){
             parado = true;
             dispatcher.setParado(true);
@@ -85,7 +106,6 @@ public class Servidor extends Service{
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
     

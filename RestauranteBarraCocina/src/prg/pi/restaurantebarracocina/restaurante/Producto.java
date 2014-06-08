@@ -1,6 +1,6 @@
 package prg.pi.restaurantebarracocina.restaurante;
+
 /**
- * 
  * Clase que contiene toda la información sobre productos.
  * 
  * @author Juan G. Pérez Leo
@@ -10,8 +10,8 @@ public class Producto {
 	private int idMenu;
 	private String nombreProducto;
 	private String cantidadPadre;
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param idMenu [int] Id del menu del producto.
@@ -21,8 +21,8 @@ public class Producto {
 		this.idMenu = idMenu;
 		this.nombreProducto = nombreProducto;
 	}
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param idMenu [int] Id del menu del producto.
@@ -34,6 +34,7 @@ public class Producto {
 		this.nombreProducto = nombreProducto;
 		this.cantidadPadre = cantidadPadre;
 	}
+	
 	/**
      * Permite obtener el nombre de la cantidad asociada al producto.
      * 
@@ -42,6 +43,7 @@ public class Producto {
 	public String getCantidadPadre() {
 		return cantidadPadre;
 	}
+	
 	/**
      * Permite modificar el nombre de la cantidad asociada al producto.
      * 
@@ -50,6 +52,7 @@ public class Producto {
 	public void setCantidadPadre(String cantidadPadre) {
 		this.cantidadPadre = cantidadPadre;
 	}
+	
 	/**
      * Permite obtener el id del menu.
      * 
@@ -58,6 +61,7 @@ public class Producto {
 	public int getIdMenu() {
 		return idMenu;
 	}
+	
 	/**
      * Permite modificar el id del menu.
      * 
@@ -66,6 +70,7 @@ public class Producto {
 	public void setIdMenu(int idMenu) {
 		this.idMenu = idMenu;
 	}
+	
 	/**
      * Permite obtener el nombre del producto.
      * 
@@ -74,6 +79,7 @@ public class Producto {
 	public String getNombreProducto() {
 		return nombreProducto;
 	}
+	
 	/**
      * Permite modificar el nombre del producto.
      * 

@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * Clase encargada de la gestión del histórico de pedidos listos en el dispositivo destino
+ * 
+ * @author Juan G. Pérez Leo
+ * @author Cristian Marín Honor
+ */
 public class FragmentHistorico extends Fragment {
 	private ListView listaHistorico;
 	private Button limpiar, cambiar, mas, menos, enviar, deshacer;
@@ -45,20 +50,21 @@ public class FragmentHistorico extends Fragment {
 		super.onActivityCreated(state);
 		prepararListeners();
 	}
+	
 	/**
-	 * 
 	 * Clase encargada de mostrar los pedidos historicos
 	 * 
 	 * @author Juan G. Pérez Leo
 	 * @author Cristian Marín Honor
 	 */
 	private class AdaptadorHistorico extends BaseAdapter {
+		
 		private LayoutInflater mInflater;
+		
 		/**
 		 * Constructor:
 		 * 
-		 * @param context
-		 *            [Context] Contexto en el que se encuentra el adaptador.
+		 * @param context [Context] Contexto en el que se encuentra el adaptador.
 		 */
 		public AdaptadorHistorico(Context context) {
 			mInflater = LayoutInflater.from(context);
@@ -100,27 +106,24 @@ public class FragmentHistorico extends Fragment {
 			return convertView;
 		}
 	}
+	
 	/**
-	 * 
 	 * Elimina todos los pedidos históricos.
-	 * 
 	 */
 	public void limpiarPedidos() {
 		historicos.clear();
 		listaHistorico.invalidateViews();
 	}
+	
 	/**
-	 * 
 	 * Encargado de iniciar el listener de la lista de pedidos históricos,su adaptador y todos los listener de los botones de la
 	 * interfaz.
-	 * 
 	 */
 	private void prepararListeners() {
 		listaHistorico = (ListView) getView().findViewById(R.id.historico);
 		adaptador = new AdaptadorHistorico(getView().getContext());
 		listaHistorico.setAdapter(adaptador);
-		listaHistorico
-				.setOnItemLongClickListener(new OnItemLongClickListener() {
+		listaHistorico.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 					@Override
 					public boolean onItemLongClick(AdapterView<?> arg0,
@@ -140,10 +143,14 @@ public class FragmentHistorico extends Fragment {
 					}
 
 				});
+		
+		/* Creación de la calculadora */
 		calculadora = new Calculadora(
 				new int[] { R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4,
 						R.id.c5, R.id.c6, R.id.c7, R.id.c8, R.id.c9 }, R.id.ce,
 				R.id.total,getView());
+		
+		/* Botón cambiar */
 		cambiar = (Button) getView().findViewById(R.id.cambiar);
 		cambiar.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
@@ -161,6 +168,8 @@ public class FragmentHistorico extends Fragment {
 			}
 
 		});
+		
+		/* Botón + */
 		mas = (Button) getView().findViewById(R.id.mas);
 		mas.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
@@ -175,6 +184,8 @@ public class FragmentHistorico extends Fragment {
 			}
 
 		});
+		
+		/* Botón - */
 		menos = (Button) getView().findViewById(R.id.menos);
 		menos.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
@@ -188,15 +199,15 @@ public class FragmentHistorico extends Fragment {
 			}
 
 		});
+		
+		/* Botón deshacer */
 		deshacer = (Button) getView().findViewById(R.id.deshacer);
 		deshacer.setOnClickListener(new AdapterView.OnClickListener() {
 			public void onClick(View view) {
-
 				if (seleccionado > -1) {
 					final PedidosEntrantesCB pedido = historicos
 							.get(seleccionado);
-					if (pedido.getListos() != listoAnterior
-							|| pedido.getUnidades() == pedido.getListos()) {
+					if (pedido.getListos() != listoAnterior || pedido.getUnidades() == pedido.getListos()) {
 						new Thread(new Runnable() {
 							public void run() {
 								getActivity().runOnUiThread(new Runnable() {
@@ -214,8 +225,6 @@ public class FragmentHistorico extends Fragment {
 											try {
 												Thread.sleep(2000);
 											} catch (InterruptedException e) {
-												// TODO Auto-generated catch
-												// block
 												e.printStackTrace();
 											}
 											String respuesta[] = c
@@ -227,67 +236,51 @@ public class FragmentHistorico extends Fragment {
 														getView().getContext());
 												dialog.setMessage(respuesta[1]);
 												dialog.setCancelable(false);
-												dialog.setNeutralButton(
-														"OK",
-														new DialogInterface.OnClickListener() {
-															@Override
-															public void onClick(
-																	DialogInterface dialog,
-																	int which) {
-																listaHistorico.invalidateViews();
-																adaptador.notifyDataSetChanged();
-																dialog.cancel();
-															}
-														});
+												dialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+													@Override
+													public void onClick(
+															DialogInterface dialog,
+															int which) {
+														listaHistorico.invalidateViews();
+														adaptador.notifyDataSetChanged();
+														dialog.cancel();
+													}
+												});
 												dialog.show();
 											} else {
-												if (pedido.getUnidades() == pedido
-														.getListos()
-														|| pedido.getListos() == 0) {
-													pedido.setListos(0);
+												if (pedido.getListos() == 0) {
 													historicos.remove(pedido);
 												}
-												historicoListener
-														.onDeshacerPedido(pedido);
+												historicoListener.onDeshacerPedido(pedido);
 												seleccionado = -1;
-												adaptador
-														.notifyDataSetChanged();
+												adaptador.notifyDataSetChanged();
 											}
 										} catch (NullPointerException e) {
-											Log.e("size", historicos.size()
-													+ "");
-											Log.e("listoAnterior",
-													listoAnterior + "");
-											dialog = new AlertDialog.Builder(
-													getView().getContext());
+											dialog = new AlertDialog.Builder(getView().getContext());
 											dialog.setMessage("No se ha podido conectar al servidor");
 											dialog.setCancelable(false);
-											dialog.setNeutralButton(
-													"OK",
-													new DialogInterface.OnClickListener() {
-														@Override
-														public void onClick(
-																DialogInterface dialog,
-																int which) {
-															dialog.cancel();
-														}
-													});
+											dialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													dialog.cancel();
+												}
+											});
 											dialog.show();
 										}
 									}
 								});
 							}
 						}).start();
-
 					}
 				}
 			}
 
 		});
 	}
+	
 	/**
-	 * 
-	 * 
 	 * Clase encargada de almacenar los datos y colores en los textos de la lista pedidos históricos.
 	 * 
 	 * @author Juan G. Pérez Leo
@@ -299,20 +292,20 @@ public class FragmentHistorico extends Fragment {
 		private TextView cantidadTexto;
 		private TextView productoTexto;
 		private TextView listoTexto;
+		
 		/**
 	     * Constructor:
 	     * 
 	     * @param view [View] Vista a modificar.
 	     */
 		public HistoricoText(View view) {
-			cantidadTexto = (TextView) view
-					.findViewById(R.id.cantidadPendiente);
-			productoTexto = (TextView) view
-					.findViewById(R.id.productoPendiente);
+			cantidadTexto = (TextView) view.findViewById(R.id.cantidadPendiente);
+			productoTexto = (TextView) view.findViewById(R.id.productoPendiente);
 			seccionTexto = (TextView) view.findViewById(R.id.seccionPendiente);
 			mesaTexto = (TextView) view.findViewById(R.id.mesaPendiente);
 			listoTexto = (TextView) view.findViewById(R.id.listoPendiente);
 		}
+		
 		/**
 	     * Modifica el color de todos los textos de la lista de pedidos históricos.
 	     * 
@@ -325,6 +318,7 @@ public class FragmentHistorico extends Fragment {
 			mesaTexto.setBackgroundColor(color);
 			listoTexto.setBackgroundColor(color);
 		}
+		
 		/**
 	     * Añade el contenido de los textos de la lista de pedidos históricos.
 	     * 
@@ -334,8 +328,7 @@ public class FragmentHistorico extends Fragment {
 	     * @param producto [String] Nombre del producto.
 	     * @param listo [String] Cantidad de productos listos.
 	     */
-		public void addTexto(String seccion, String mesa, int cantidad,
-				String producto, int listo) {
+		public void addTexto(String seccion, String mesa, int cantidad, String producto, int listo) {
 			cantidadTexto.setText(cantidad + "");
 			productoTexto.setText(producto);
 			seccionTexto.setText(seccion);
@@ -343,10 +336,11 @@ public class FragmentHistorico extends Fragment {
 			listoTexto.setText(listo + "");
 		}
 	}
+	
 	/**
      * Añade los pedidos listos enviados por cocina/barra a la lista de pedidos históricos.
      * 
-     * @param pedidosAdd [PedidosEntrantesCB[]]
+     * @param pedidosAdd [PedidosEntrantesCB[]] lista de pedididos entrantes
      */
 	public void addPedidosHistoricos(PedidosEntrantesCB[] pedidosAdd) {
 		boolean encontrado;
@@ -375,15 +369,15 @@ public class FragmentHistorico extends Fragment {
 		listaHistorico.invalidateViews();
 		adaptador.notifyDataSetChanged();
 	}
+	
 	/**
-	 * 
-	 * 
 	 * Interface para la comunicación con la clase principal.
 	 * 
 	 * @author Juan G. Pérez Leo
 	 * @author Cristian Marín Honor
 	 */
 	public interface HistoricoListener {
+		
 		/**
 	     * Comunica los pedidos que se han modificado
 	     * 
@@ -391,6 +385,7 @@ public class FragmentHistorico extends Fragment {
 	     */
 		public void onDeshacerPedido(PedidosEntrantesCB pedido);
 	}
+	
 	/**
      * Permite modificar el listener. 
      * 
@@ -399,9 +394,9 @@ public class FragmentHistorico extends Fragment {
 	public void setHistoricoListener(HistoricoListener historicoListener) {
 		this.historicoListener = historicoListener;
 	}
+	
 	/**
      * Lanza una notificación cuando no se termina de deshacer un pedido correctamente. 
-     * 
      */
 	private void notificacionDeshacer() {
 		dialog = new AlertDialog.Builder(getView().getContext());
@@ -415,6 +410,7 @@ public class FragmentHistorico extends Fragment {
 		});
 		dialog.show();
 	}
+	
 	/**
      * Devuelve el pedido entrante, en caso de encontrarlo, de la lista de pedidos históricos.
      * 
@@ -429,6 +425,7 @@ public class FragmentHistorico extends Fragment {
 				return pedidoE;
 		return null;
 	}
+	
 	/**
      * Devuelve la lista de pedidos históricos.
      * 
@@ -437,13 +434,14 @@ public class FragmentHistorico extends Fragment {
 	public ArrayList<PedidosEntrantesCB> dameHistoricos() {
 		return historicos;
 	}
+	
 	/**
      * Avisa al adaptador de la lista de pedidos históricos.
-     * 
      */
 	public void avisaAdaptador() {
 		adaptador.notifyDataSetChanged();
 	}
+	
 	/**
      * Devuelve la lista de pedidos históricos servidos.
      * 
@@ -452,6 +450,7 @@ public class FragmentHistorico extends Fragment {
 	public ArrayList<PedidosEntrantesCB> getHistoricosServidos() {
 		return historicosServidos;
 	}
+	
 	/**
      * Devuelve el adaptador de la lista de pedidos históricos.
      * 

@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidoModificadoCamarero;
+
 /**
  * Clase encargada de decodificar el mensaje ModificacionCamarero del servidor.
  * 
@@ -15,6 +16,7 @@ public class DecodificadorCancelarPedido {
 	
 	private Document dom;
 	private PedidoModificadoCamarero pedido;
+	
 	/**
 	 * Constructor:
 	 * 
@@ -24,6 +26,7 @@ public class DecodificadorCancelarPedido {
 		this.dom = dom;
 		extraerCancelados();
 	}
+	
 	/**
 	 * Devuelve el pedido cancelado por del servidor.
 	 * 
@@ -32,9 +35,9 @@ public class DecodificadorCancelarPedido {
 	public PedidoModificadoCamarero getCancelado(){
 		return pedido;
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera el pedido cancelado.
-	 * 
 	 */
 	private void extraerCancelados(){
 		/* Obtenemos la información del mensaje */

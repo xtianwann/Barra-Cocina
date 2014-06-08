@@ -1,6 +1,6 @@
 package prg.pi.restaurantebarracocina.restaurante;
+
 /**
- * 
  * Clase que contiene toda la información sobre las mesas.
  * 
  * @author Juan G. Pérez Leo
@@ -9,8 +9,8 @@ package prg.pi.restaurantebarracocina.restaurante;
 public class Mesa {
 	private int id;
 	private String nombre;
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param id [int] Id de la mesa.
@@ -21,6 +21,7 @@ public class Mesa {
 		this.id = id;
 		this.nombre = nombre;
 	}
+	
 	/**
      * Permite obtener el id de la mesa.
      * 
@@ -29,6 +30,7 @@ public class Mesa {
 	public int getId() {
 		return id;
 	}
+	
 	/**
      * Permite modificar id de la mesa.
      * 
@@ -37,6 +39,7 @@ public class Mesa {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	/**
      * Permite obtener el nombre de la mesa.
      * 
@@ -45,6 +48,7 @@ public class Mesa {
 	public String getNombre() {
 		return nombre;
 	}
+	
 	/**
      * Permite modificar el nombre de la mesa.
      * 

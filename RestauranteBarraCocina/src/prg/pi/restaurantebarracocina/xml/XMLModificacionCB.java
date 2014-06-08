@@ -2,17 +2,17 @@ package prg.pi.restaurantebarracocina.xml;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import XML.XML;
+
 /**
- * 
  * Clase encargada de formar el xml con toda la información modificar un pedido de la cocina.
  * 
  * @author Juan G. Pérez Leo
  * @author Cristian Marín Honor
  */
 public class XMLModificacionCB extends XML{
+	
 	/**
-	 * 
-	 * Constructor:
+	 * Constructor: genera la estructura del mensaje XML con su contenido
 	 * 
 	 * @param pedidos [PedidosEntrantesCB[]] Lista de pedidos a modificar.
 	 */

@@ -9,15 +9,13 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import android.util.Log;
-
 import prg.pi.restaurantebarracocina.MainActivity;
 
 /**
  * Coge un socket de la lista y se lo da al gestor de mensajes
  * 
- * @author Juan G. PÃ©rez Leo
- * @author Cristian MarÃ­n Honor
+ * @author Juan G. Pérez Leo
+ * @author Cristian Marín Honor
  */
 public class Dispatcher extends Thread{
     
@@ -26,17 +24,31 @@ public class Dispatcher extends Thread{
     private Servidor.HiloPrincipal hiloPrincipal;
     private MainActivity principal;
     
+    /**
+     * Constructor
+     */
     public Dispatcher(){
         cola = new ColaSincronizadaSocket();
         hiloPrincipal = null;
     }
     
-    public Dispatcher(Servidor.HiloPrincipal hiloPrincipal,MainActivity principal){
+    /**
+     * Constructor
+     * 
+     * @param hiloPrincipal [Servidor.HiloPrincipal] instancia del hilo principal
+     * @param principal [MainActivity] instancia de la actividad principal
+     */
+    public Dispatcher(Servidor.HiloPrincipal hiloPrincipal, MainActivity principal){
     	this.principal = principal;
         this.hiloPrincipal = hiloPrincipal;
         cola = new ColaSincronizadaSocket();
     }
     
+    /**
+     * Añade un socket a la cola de conexiones.
+     * 
+     * @param socket [Socket] socket a través del cual un disositivo se conecta con el servidor.
+     */
     public void addSocket(Socket socket){
         try {
             cola.addSocket(socket);
@@ -53,7 +65,6 @@ public class Dispatcher extends Thread{
         while(!parado){
             if(!cola.isListaVacia()){
                 try {
-                   Log.d("Dispatcher: Socket!","Dispatcher: Socket!");
                     Socket socket = cola.getSocket();
                     new GestorMensajes(socket,principal).start();
                 } catch (TimeoutException ex) {
@@ -67,10 +78,20 @@ public class Dispatcher extends Thread{
         }
     }
 
+    /**
+     * Permite saber si el Dispatcer está parado o no.
+     * 
+     * @return [boolean] true si está parado, false en caso contrario.
+     */
     public boolean isParado() {
         return parado;
     }
 
+    /**
+     * Permite modificar el estado del Dispatcher a parado o corriendo.
+     * 
+     * @param parado [boolean] true para pararlo, false para que funcione.
+     */
     public void setParado(boolean parado) {
         this.parado = parado;
     }

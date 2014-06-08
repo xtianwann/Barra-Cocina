@@ -1,19 +1,18 @@
 package prg.pi.restaurantebarracocina.xml;
 
-import android.util.Log;
 import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
 import XML.XML;
+
 /**
- * 
  * Clase encargada de formar el xml con toda la información para poner pedidos listos.
  * 
  * @author Juan G. Pérez Leo
  * @author Cristian Marín Honor
  */
 public class XMLPedidosListos extends XML{
+	
 	/**
-	 * 
-	 * Constructor:
+	 * Constructor: genera la estructura del mensaje XML con su contenido
 	 * 
 	 * @param pedidos [PedidosEntrantesCB[]] Lista de pedidos listos.
 	 */

@@ -5,8 +5,6 @@ import Conexion.Conexion;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,11 +17,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import prg.pi.restaurantebarracocina.MainActivity;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCancelarPedido;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorComandaAcabada;
@@ -31,22 +24,27 @@ import prg.pi.restaurantebarracocina.decodificador.DecodificadorInfoAcumulada;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorModificacionCamarero;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosEntrantesCB;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorPedidosServidos;
-import prg.pi.restaurantebarracocina.restaurante.Mesa;
-import prg.pi.restaurantebarracocina.restaurante.Pedido;
-import prg.pi.restaurantebarracocina.restaurante.PedidosEntrantesCB;
-import prg.pi.restaurantebarracocina.restaurante.Producto;
 
 /**
+ * Interpreta la cabecera del mensaje y ejecuta la acción que le corresponde
+ * para tratarlo.
+ * 
  * @author Juan G. Pérez Leo
  * @author Cristian Marín Honor
  */
 public class GestorMensajes extends Thread {
 
 	private Socket socket;
-	Conexion conn;
+	private Conexion conn;
 	private String mensaje;
 	private MainActivity principal;
 
+	/**
+     * Constructor
+     * 
+     * @param socket [Scoket] socket por el que un dispositivo está estableciendo
+     * conexión con el servidor
+     */
 	public GestorMensajes(Socket socket, MainActivity principal) {
 		this.principal = principal;
 		this.socket = socket;
@@ -68,8 +66,7 @@ public class GestorMensajes extends Thread {
 
 	public void run() {
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder;
 			mensaje = mensaje.substring(mensaje.indexOf("<"));
 			builder = factory.newDocumentBuilder();
@@ -78,6 +75,8 @@ public class GestorMensajes extends Thread {
 
 			NodeList nodo = dom.getElementsByTagName("tipo");
 			String tipo = nodo.item(0).getChildNodes().item(0).getNodeValue();
+			
+			/* Tipos de mensajes que puede recibir */
 			if (tipo.equals("PedidoMesa")) {
 				new Thread(new Runnable() {
 					public void run() {
@@ -91,6 +90,7 @@ public class GestorMensajes extends Thread {
 					}
 				}).start();
 			}
+			
 			if (tipo.equals("ModificacionCamarero")) {
 				new Thread(new Runnable() {
 					public void run() {
@@ -104,6 +104,7 @@ public class GestorMensajes extends Thread {
 					}
 				}).start();
 			}
+			
 			if (tipo.equals("CancelarPedido")) {
 				new Thread(new Runnable() {
 					public void run() {
@@ -117,6 +118,7 @@ public class GestorMensajes extends Thread {
 					}
 				}).start();
 			}
+			
 			if (tipo.equals("InfoAcumulada")) {
 				new Thread(new Runnable() {
 					public void run() {
@@ -130,6 +132,7 @@ public class GestorMensajes extends Thread {
 					}
 				}).start();
 			}
+			
 			if (tipo.equals("TodosServidos")) {
 				new Thread(new Runnable() {
 					public void run() {
@@ -143,6 +146,7 @@ public class GestorMensajes extends Thread {
 					}
 				}).start();
 			}
+			
 			if (tipo.equals("ComandaAcabada")) {
 				new Thread(new Runnable() {
 					public void run() {

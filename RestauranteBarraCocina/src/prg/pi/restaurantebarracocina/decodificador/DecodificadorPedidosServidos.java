@@ -6,9 +6,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import android.util.Log;
-
 import prg.pi.restaurantebarracocina.restaurante.PedidoFinalizado;
+
 /**
  * Clase encargada de decodificar el mensaje PedidosServidos del servidor.
  * 
@@ -19,6 +18,7 @@ public class DecodificadorPedidosServidos {
 	
 	private Document dom;
 	private ArrayList<PedidoFinalizado> pedidosFinalizados;
+	
 	/**
 	 * Constructor:
 	 * 
@@ -29,17 +29,18 @@ public class DecodificadorPedidosServidos {
 		pedidosFinalizados = new ArrayList<PedidoFinalizado>();
 		extraerServidos();
 	}
+	
 	/**
 	 * Devuelve el pedidos finalizados recibido del servidor.
 	 * 
-	 * @return [PedidoFinalizado[]] Pedidos finalizados del servidor.
+	 * @return [PedidoFinalizado[ ]] Pedidos finalizados del servidor.
 	 */
 	public PedidoFinalizado[] getFinalizados(){
 		return pedidosFinalizados.toArray(new PedidoFinalizado[0]);
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera los pedidos finalizados.
-	 * 
 	 */
 	private void extraerServidos(){
 		NodeList nlServidos = dom.getElementsByTagName("pedido");
@@ -47,7 +48,7 @@ public class DecodificadorPedidosServidos {
 			Node servido = nlServidos.item(contadorServidos);
 			int idComanda = Integer.parseInt(servido.getChildNodes().item(0).getFirstChild().getNodeValue());
 			int idMenu = Integer.parseInt(servido.getChildNodes().item(1).getFirstChild().getNodeValue());
-			Log.e("decodificador", idComanda+" "+idMenu);
+			
 			pedidosFinalizados.add(new PedidoFinalizado(idComanda, idMenu));
 		}
 	}

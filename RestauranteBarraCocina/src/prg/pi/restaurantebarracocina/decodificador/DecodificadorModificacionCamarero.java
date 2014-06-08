@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import prg.pi.restaurantebarracocina.restaurante.PedidoModificadoCamarero;
+
 /**
  * Clase encargada de decodificar el mensaje ModificacionCamarero del servidor.
  * 
@@ -17,27 +18,29 @@ import prg.pi.restaurantebarracocina.restaurante.PedidoModificadoCamarero;
 public class DecodificadorModificacionCamarero {
 	private Document dom;
 	private ArrayList<PedidoModificadoCamarero> pedidosListos;
+	
 	/**
 	 * Constructor:
 	 * 
-	 * @param dom [Document] DOM del XMl a interpretar.
+	 * @param dom [Document] DOM del XML a interpretar.
 	 */
 	public DecodificadorModificacionCamarero(Document dom){
 		this.dom = dom;
 		pedidosListos = new ArrayList<PedidoModificadoCamarero>();
 		generarPedidos();
 	}
+	
 	/**
 	 * Devuelve los pedidos modificados recibidos del servidor.
 	 * 
-	 * @return [PedidoModificadoCamarero[]] Pedidos modificados del servidor.
+	 * @return [PedidoModificadoCamarero[ ]] Pedidos modificados del servidor.
 	 */
 	public PedidoModificadoCamarero[] getPedidosListos(){
 		return pedidosListos.toArray(new PedidoModificadoCamarero[0]);
 	}
+	
 	/**
 	 * Interpreta la respuesta recibida por el servidor y genera los pedidos modificados.
-	 * 
 	 */
 	private void generarPedidos(){
 		NodeList nodeListPedidos = dom.getElementsByTagName("pedido");

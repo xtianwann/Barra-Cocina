@@ -1,6 +1,6 @@
 package prg.pi.restaurantebarracocina.restaurante;
+
 /**
- * 
  * Clase que contiene toda la información sobre pedidos finalizados.
  * 
  * @author Juan G. Pérez Leo
@@ -10,8 +10,8 @@ public class PedidoFinalizado {
 	
 	private int idComanda;
 	private int idMenu;
+	
 	/**
-     * 
      * Constructor:
      * 
      * @param idComanda [int] Id de la comanda del pedido que ha finalizado.
@@ -21,6 +21,7 @@ public class PedidoFinalizado {
 		this.idComanda = idComanda;
 		this.idMenu = idMenu;
 	}
+	
 	/**
      * Permite obtener el id de la comanda.
      * 
@@ -29,6 +30,7 @@ public class PedidoFinalizado {
 	public int getIdComanda() {
 		return idComanda;
 	}
+	
 	/**
      * Permite obtener el id del menu.
      * 
