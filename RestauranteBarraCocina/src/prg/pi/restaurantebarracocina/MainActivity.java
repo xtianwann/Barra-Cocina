@@ -785,6 +785,16 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 				pedidoH.setUnidades(pedidoH.getUnidades()
 						- pedidoM.getUnidades());
 				pedidoH.setListos(pedidoH.getListos() - pedidoM.getUnidades());
+				
+			}
+		}
+		for (PedidosEntrantesCB pedidoH : pedidosEntrantes) {
+			if (pedidoM.getIdComanda() == pedidoH.getIdComanda()
+					&& pedidoM.getIdMenu() == pedidoH.getProducto().getIdMenu()) {
+				pedidoH.setUnidades(pedidoH.getUnidades()
+						- pedidoM.getUnidades());
+				pedidoH.setListos(pedidoH.getListos() - pedidoM.getUnidades());
+				
 			}
 		}
 		fragmentHistorico.avisaAdaptador();
