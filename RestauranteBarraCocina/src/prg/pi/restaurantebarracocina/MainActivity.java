@@ -514,11 +514,27 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 						String mensaje = xmlEnviarComandaLista
 								.xmlToString(xmlEnviarComandaLista.getDOM());
 						Cliente c = new Cliente(mensaje, getIpServidor());
+						try{
 						c.init();
 						terminarPedido();
 						listos.clear();
 						seleccionado = -1;
 						adaptador.notifyDataSetChanged();
+						} catch (NullPointerException e){
+							dialog = new AlertDialog.Builder(MainActivity.this);
+							dialog.setMessage("No se pudo conectar con el servidor.");
+							dialog.setCancelable(false);
+							dialog.setNeutralButton("OK",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											dialog.cancel();
+										}
+									});
+							dialog.show();
+						}
 					}
 				});
 			}
@@ -661,7 +677,7 @@ public class MainActivity extends FragmentActivity implements HistoricoListener 
 		/**
 		 * Constructor:
 		 * 
-		 * @param view [View] Vista a modificar.
+		 * @param convertView [View] Vista a modificar.
 		 */
 		public PedidoTexto(View convertView) {
 			cantidadTexto = (TextView) convertView.findViewById(R.id.unidad);

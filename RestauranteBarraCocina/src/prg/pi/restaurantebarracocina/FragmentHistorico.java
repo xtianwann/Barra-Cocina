@@ -29,7 +29,7 @@ import android.widget.TextView;
  */
 public class FragmentHistorico extends Fragment {
 	private ListView listaHistorico;
-	private Button limpiar, cambiar, mas, menos, enviar, deshacer;
+	private Button cambiar, mas, menos, deshacer;
 	private Calculadora calculadora;
 	private ArrayList<PedidosEntrantesCB> historicos = new ArrayList<PedidosEntrantesCB>();
 	private int seleccionado = -1;
