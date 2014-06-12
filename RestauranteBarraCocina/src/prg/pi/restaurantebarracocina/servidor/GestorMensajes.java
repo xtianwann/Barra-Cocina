@@ -17,6 +17,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import android.util.Log;
+
 import prg.pi.restaurantebarracocina.MainActivity;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorCancelarPedido;
 import prg.pi.restaurantebarracocina.decodificador.DecodificadorComandaAcabada;
@@ -125,6 +127,7 @@ public class GestorMensajes extends Thread {
 						principal.runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
+								
 								DecodificadorInfoAcumulada pedidos = new DecodificadorInfoAcumulada(dom);
 								principal.actualizarPedidos(pedidos.getInfoActualizada());
 							}
